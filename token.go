@@ -156,6 +156,12 @@ const (
 	ENABLE
 	NAMEONLY
 	SELECTOR
+	START
+	STOP
+	REBALANCE
+	REDO
+	PROXY
+	PROXIES
 	keywordEnd
 )
 
@@ -294,6 +300,12 @@ var tokens = [...]string{
 	ENABLE:        "ENABLE",
 	NAMEONLY:      "NAMEONLY",
 	SELECTOR:      "SELECTOR",
+	START:		   "START",
+	STOP:		   "STOP",
+	REBALANCE:"REBALANCE",
+	REDO:"REDO",
+	PROXY:"PROXY",
+	PROXIES:"PROXIES",
 }
 
 var keywords map[string]Token
