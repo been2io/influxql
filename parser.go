@@ -1961,6 +1961,12 @@ func (p *Parser) parseNodeOptions() (*NodeOptions, map[Token]struct{}, error) {
 			stmt.Enable = Boolptr(false)
 		case ENABLE:
 			stmt.Enable = Boolptr(true)
+		case WEIGHT:
+			t, err := p.ParseInt(-10000, 10000)
+			if err != nil {
+				return nil, found, err
+			}
+			stmt.Weight = t
 		default:
 			p.Unscan()
 			return stmt, found, nil

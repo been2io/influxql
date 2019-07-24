@@ -156,6 +156,7 @@ const (
 	ENABLE
 	NAMEONLY
 	SELECTOR
+	WEIGHT
 	keywordEnd
 )
 
@@ -294,6 +295,7 @@ var tokens = [...]string{
 	ENABLE:        "ENABLE",
 	NAMEONLY:      "NAMEONLY",
 	SELECTOR:      "SELECTOR",
+	WEIGHT:        "WEIGHT",
 }
 
 var keywords map[string]Token

@@ -2865,12 +2865,12 @@ func TestParser_ParseStatement(t *testing.T) {
 				RetentionPolicyReplication:        intptr(2),
 				RetentionPolicyShardGroupDuration: 10 * time.Minute,
 				ClusterOptions: influxql.ClusterOptions{
-					Key:       []string{"key1", "key2"},
+					Key: []string{"key1", "key2"},
 					Selector: map[string]string{
-						"a":"b",
-						"c":"d",
+						"a": "b",
+						"c": "d",
 					},
-					Nodes:[]string{"n1"},
+					Nodes:     []string{"n1"},
 					Mode:      "RO",
 					Partition: 3,
 				},
@@ -3159,7 +3159,7 @@ func TestParser_ParseStatement(t *testing.T) {
 				ClusterOptions: influxql.ClusterOptions{
 					Partition: 4,
 					Key:       []string{"a"},
-					Selector:     map[string]string{
+					Selector: map[string]string{
 						"a": "b",
 						"c": "d",
 					},
@@ -3254,13 +3254,14 @@ func TestParser_ParseStatement(t *testing.T) {
 		},
 		// NODES
 		{
-			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO ",
+			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO WEIGHT 1 ",
 			stmt: &influxql.CreateNodesStatement{
 				Hosts: []string{"n1", "n2", "n3"},
 				Ports: []int{8888, 7777},
 				NodeOptions: influxql.NodeOptions{
 					Labels: map[string]string{"a": "b"},
 					Mode:   "RO",
+					Weight: 1,
 					Enable: influxql.Boolptr(false),
 				},
 			},
@@ -3285,7 +3286,7 @@ func TestParser_ParseStatement(t *testing.T) {
 					Mode:   "WO",
 					Enable: influxql.Boolptr(true),
 				},
-				NameOnly:true,
+				NameOnly: true,
 			},
 		},
 		{
