@@ -1484,6 +1484,32 @@ func (p *Parser) parseDropMeasurementStatement() (*DropMeasurementStatement, err
 	return stmt, nil
 }
 
+func (p *Parser) parseDisableProxyStatement() (*DisableProxyStatement, error) {
+	stmt := &DisableProxyStatement{}
+
+	// Parse the name of the measurement to be dropped.
+	lit, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Name = lit
+
+	return stmt, nil
+}
+
+func (p *Parser) parseEnableProxyStatement() (*EnableProxyStatement, error) {
+	stmt := &EnableProxyStatement{}
+
+	// Parse the name of the measurement to be dropped.
+	lit, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Name = lit
+
+	return stmt, nil
+}
+
 // parseDropSeriesStatement parses a string and returns a DropSeriesStatement.
 // This function assumes the "DROP SERIES" tokens have already been consumed.
 func (p *Parser) parseDropSeriesStatement() (*DropSeriesStatement, error) {
@@ -1573,6 +1599,9 @@ func (p *Parser) parseShowDatabasesStatement() (*ShowDatabasesStatement, error) 
 	return &ShowDatabasesStatement{}, nil
 }
 
+func (p *Parser) parseShowProxiesStatement() (*ShowProxiesStatement, error) {
+	return &ShowProxiesStatement{}, nil
+}
 // parseCreateContinuousQueriesStatement parses a string and returns a CreateContinuousQueryStatement.
 // This function assumes the "CREATE CONTINUOUS" tokens have already been consumed.
 func (p *Parser) parseCreateContinuousQueryStatement() (*CreateContinuousQueryStatement, error) {
@@ -2282,6 +2311,159 @@ func (p *Parser) parseDropContinuousQueryStatement() (*DropContinuousQueryStatem
 
 	return stmt, nil
 }
+
+func (p *Parser) parseStartContinuousQueryStatement() (*StartContinuousQueryStatement, error) {
+	stmt := &StartContinuousQueryStatement{}
+
+	// Read the id of the query to drop.
+	ident, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Name = ident
+
+	// Expect an "ON" keyword.
+	if tok, pos, lit := p.ScanIgnoreWhitespace(); tok != ON {
+		return nil, newParseError(tokstr(tok, lit), []string{"ON"}, pos)
+	}
+
+	// Read the name of the database to remove the query from.
+	if ident, err = p.ParseIdent(); err != nil {
+		return nil, err
+	}
+	stmt.Database = ident
+
+	return stmt, nil
+}
+
+func (p *Parser) parseStopContinuousQueryStatement() (*StopContinuousQueryStatement, error) {
+	stmt := &StopContinuousQueryStatement{}
+
+	// Read the id of the query to drop.
+	ident, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Name = ident
+
+	// Expect an "ON" keyword.
+	if tok, pos, lit := p.ScanIgnoreWhitespace(); tok != ON {
+		return nil, newParseError(tokstr(tok, lit), []string{"ON"}, pos)
+	}
+
+	// Read the name of the database to remove the query from.
+	if ident, err = p.ParseIdent(); err != nil {
+		return nil, err
+	}
+	stmt.Database = ident
+
+	return stmt, nil
+}
+
+func (p *Parser) parseStopAllContinuousQueryStatement() (*StopAllContinuousQueryStatement, error) {
+	stmt := &StopAllContinuousQueryStatement{}
+
+	// Expect an "ON" keyword.
+	if tok, pos, lit := p.ScanIgnoreWhitespace(); tok != ON {
+		return nil, newParseError(tokstr(tok, lit), []string{"ON"}, pos)
+	}
+
+	// Read the name of the database to remove the query from.
+	ident, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Database = ident
+
+	return stmt, nil
+}
+
+func (p *Parser) parseStartAllContinuousQueryStatement() (*StartAllContinuousQueryStatement, error) {
+	stmt := &StartAllContinuousQueryStatement{}
+
+	// Expect an "ON" keyword.
+	if tok, pos, lit := p.ScanIgnoreWhitespace(); tok != ON {
+		return nil, newParseError(tokstr(tok, lit), []string{"ON"}, pos)
+	}
+
+	// Read the name of the database to remove the query from.
+	ident, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Database = ident
+
+	return stmt, nil
+}
+
+
+func (p *Parser) parseRebalanceContinuousQueryStatement() (*RebalanceContinuousQueryStatement, error) {
+	stmt := &RebalanceContinuousQueryStatement{}
+
+	// // Read the id of the query to drop.
+	// ident, err := p.ParseIdent()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// stmt.Name = ident
+
+	// // Expect an "ON" keyword.
+	// if tok, pos, lit := p.ScanIgnoreWhitespace(); tok != ON {
+	// 	return nil, newParseError(tokstr(tok, lit), []string{"ON"}, pos)
+	// }
+
+	// // Read the name of the database to remove the query from.
+	// if ident, err = p.ParseIdent(); err != nil {
+	// 	return nil, err
+	// }
+	// stmt.Database = ident
+
+	return stmt, nil
+}
+
+func (p *Parser) parseReDoContinuousQueryStatement() (*ReDoContinuousQueryStatement, error) {
+	stmt := &ReDoContinuousQueryStatement{}
+
+	// // Read the id of the query to drop.
+	ident, err := p.ParseIdent()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Name = ident
+
+	// Expect an "ON" keyword.
+	if tok, pos, lit := p.ScanIgnoreWhitespace(); tok != ON {
+		return nil, newParseError(tokstr(tok, lit), []string{"ON"}, pos)
+	}
+
+	// Read the name of the database to remove the query from.
+	if ident, err = p.ParseIdent(); err != nil {
+		return nil, err
+	}
+	stmt.Database = ident
+
+	// ident, err = p.ParseIdent()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// stmt.Begin = ident
+
+	// ident, err = p.ParseIdent()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// stmt.End = ident
+	// Parse condition: "WHERE EXPR".
+	if stmt.Condition, err = p.parseCondition(); err != nil {
+		return nil, err
+	}
+
+
+	return stmt, nil
+}
+
+
+
 
 // parseFields parses a list of one or more fields.
 func (p *Parser) parseFields() (Fields, error) {

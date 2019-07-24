@@ -113,6 +113,9 @@ func init() {
 		show.Handle(DATABASES, func(p *Parser) (Statement, error) {
 			return p.parseShowDatabasesStatement()
 		})
+		show.Handle(PROXIES, func(p *Parser) (Statement, error) {
+			return p.parseShowProxiesStatement()
+		})
 		show.Handle(DIAGNOSTICS, func(p *Parser) (Statement, error) {
 			return p.parseShowDiagnosticsStatement()
 		})
@@ -247,5 +250,29 @@ func init() {
 	})
 	Language.Group(KILL).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseKillQueryStatement()
+	})
+	Language.Group(START,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+		return p.parseStartContinuousQueryStatement()
+	})
+	Language.Group(STOP,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+		return p.parseStopContinuousQueryStatement()
+	})
+	Language.Group(REBALANCE,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+		return p.parseRebalanceContinuousQueryStatement()
+	})
+	Language.Group(REDO,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+		return p.parseReDoContinuousQueryStatement()
+	})
+	Language.Group(START,ALL,CONTINUOUS).Handle(QUERIES,func(p *Parser) (Statement, error) {
+		return p.parseStartAllContinuousQueryStatement()
+	})
+	Language.Group(STOP,ALL,CONTINUOUS).Handle(QUERIES,func(p *Parser) (Statement, error) {
+		return p.parseStopAllContinuousQueryStatement()
+	})
+	Language.Group(DISABLE).Handle(PROXY,func(p *Parser) (Statement, error) {
+		return p.parseDisableProxyStatement()
+	})
+	Language.Group(ENABLE).Handle(PROXY,func(p *Parser) (Statement, error) {
+		return p.parseEnableProxyStatement()
 	})
 }

@@ -219,6 +219,8 @@ func (*DeleteStatement) node()                     {}
 func (*DropContinuousQueryStatement) node()        {}
 func (*DropDatabaseStatement) node()               {}
 func (*DropMeasurementStatement) node()            {}
+func (*DisableProxyStatement) node()            {}
+func (*EnableProxyStatement) node()            {}
 func (*DropRetentionPolicyStatement) node()        {}
 func (*DropSeriesStatement) node()                 {}
 func (*DropShardStatement) node()                  {}
@@ -235,6 +237,7 @@ func (*SetPasswordUserStatement) node()            {}
 func (*ShowContinuousQueriesStatement) node()      {}
 func (*ShowGrantsForUserStatement) node()          {}
 func (*ShowDatabasesStatement) node()              {}
+func (*ShowProxiesStatement) node()              {}
 func (*ShowFieldKeyCardinalityStatement) node()    {}
 func (*ShowFieldKeysStatement) node()              {}
 func (*ShowRetentionPoliciesStatement) node()      {}
@@ -285,6 +288,12 @@ func (*CreateNodesStatement) node() {}
 func (*DropNodesStatement) node()   {}
 func (*AlterNodesStatement) node()  {}
 func (*ShowNodesStatements) node()  {}
+func (*StartContinuousQueryStatement) node()        {}
+func (*StopContinuousQueryStatement) node()        {}
+func (*RebalanceContinuousQueryStatement) node()        {}
+func (*ReDoContinuousQueryStatement) node() {}
+func (*StopAllContinuousQueryStatement) node()        {}
+func (*StartAllContinuousQueryStatement) node()        {}
 
 // Query represents a collection of ordered statements.
 type Query struct {
@@ -351,6 +360,8 @@ func (*DeleteStatement) stmt()                     {}
 func (*DropContinuousQueryStatement) stmt()        {}
 func (*DropDatabaseStatement) stmt()               {}
 func (*DropMeasurementStatement) stmt()            {}
+func (*DisableProxyStatement) stmt()            {}
+func (*EnableProxyStatement) stmt()            {}
 func (*DropRetentionPolicyStatement) stmt()        {}
 func (*DropSeriesStatement) stmt()                 {}
 func (*DropSubscriptionStatement) stmt()           {}
@@ -362,6 +373,7 @@ func (*KillQueryStatement) stmt()                  {}
 func (*ShowContinuousQueriesStatement) stmt()      {}
 func (*ShowGrantsForUserStatement) stmt()          {}
 func (*ShowDatabasesStatement) stmt()              {}
+func (*ShowProxiesStatement) stmt()              {}
 func (*ShowFieldKeyCardinalityStatement) stmt()    {}
 func (*ShowFieldKeysStatement) stmt()              {}
 func (*ShowMeasurementCardinalityStatement) stmt() {}
@@ -389,7 +401,12 @@ func (*CreateNodesStatement) stmt()                {}
 func (*DropNodesStatement) stmt()                  {}
 func (*AlterNodesStatement) stmt()                 {}
 func (*ShowNodesStatements) stmt()                 {}
-
+func (*StartContinuousQueryStatement) stmt()       {}
+func (*StopContinuousQueryStatement) stmt()        {}
+func (*RebalanceContinuousQueryStatement) stmt()        {}
+func (*ReDoContinuousQueryStatement) stmt() {}
+func (*StopAllContinuousQueryStatement) stmt()        {}
+func (*StartAllContinuousQueryStatement) stmt()        {}
 // Expr represents an expression that can be evaluated to a value.
 type Expr interface {
 	Node
@@ -2567,6 +2584,19 @@ func (s *ShowDatabasesStatement) RequiredPrivileges() (ExecutionPrivileges, erro
 	return ExecutionPrivileges{{Admin: false, Name: "", Privilege: NoPrivileges}}, nil
 }
 
+type ShowProxiesStatement struct{}
+
+// String returns a string representation of the show databases command.
+func (s *ShowProxiesStatement) String() string { return "SHOW PROXIES" }
+
+// RequiredPrivileges returns the privilege required to execute a ShowDatabasesStatement.
+func (s *ShowProxiesStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	// SHOW DATABASES is one of few statements that have no required privileges.
+	// Anyone is allowed to execute it, but the returned results depend on the user's
+	// individual database permissions.
+	return ExecutionPrivileges{{Admin: false, Name: "", Privilege: NoPrivileges}}, nil
+}
+
 // CreateContinuousQueryStatement represents a command for creating a continuous query.
 type CreateContinuousQueryStatement struct {
 	// Name of the continuous query to be created.
@@ -2666,6 +2696,114 @@ func (s *DropContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges
 func (s *DropContinuousQueryStatement) DefaultDatabase() string {
 	return s.Database
 }
+
+type StartContinuousQueryStatement struct {
+	Name string
+	Database string
+}
+
+func (s *StartContinuousQueryStatement) String() string {
+	return fmt.Sprintf("START CONTINUOUS QUERY %s ON %s", QuoteIdent(s.Name), QuoteIdent(s.Database))
+}
+
+func (s *StartContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+}
+
+func (s *StartContinuousQueryStatement) DefaultDatabase() string {
+	return s.Database
+}
+
+type StopContinuousQueryStatement struct {
+	Name string
+	Database string
+}
+
+func (s *StopContinuousQueryStatement) String() string {
+	return fmt.Sprintf("STOP CONTINUOUS QUERY %s ON %s", QuoteIdent(s.Name), QuoteIdent(s.Database))
+}
+
+func (s *StopContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+}
+
+func (s *StopContinuousQueryStatement) DefaultDatabase() string {
+	return s.Database
+}
+
+type StopAllContinuousQueryStatement struct {
+	// Name string
+	Database string
+}
+
+func (s *StopAllContinuousQueryStatement) String() string {
+	return fmt.Sprintf("STOP ALL CONTINUOUS QUERY ON %s",  QuoteIdent(s.Database))
+}
+
+func (s *StopAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+}
+
+func (s *StopAllContinuousQueryStatement) DefaultDatabase() string {
+	return s.Database
+}
+
+type StartAllContinuousQueryStatement struct {
+	// Name string
+	Database string
+}
+
+func (s *StartAllContinuousQueryStatement) String() string {
+	return fmt.Sprintf("START ALL CONTINUOUS QUERY ON %s",  QuoteIdent(s.Database))
+}
+
+func (s *StartAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+}
+
+func (s *StartAllContinuousQueryStatement) DefaultDatabase() string {
+	return s.Database
+}
+
+
+type RebalanceContinuousQueryStatement struct {
+	Name string
+	Database string
+}
+
+func (s *RebalanceContinuousQueryStatement) String() string {
+	return fmt.Sprintf("REBALANCE CONTINUOUS QUERYS")
+}
+
+func (s *RebalanceContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+}
+
+func (s *RebalanceContinuousQueryStatement) DefaultDatabase() string {
+	return s.Database
+}
+
+
+
+type ReDoContinuousQueryStatement struct {
+	Name string
+	Database string
+	Condition Expr
+}
+
+func (s *ReDoContinuousQueryStatement) String() string {
+	return fmt.Sprintf("REDO CONTINUOUS QUERY")
+}
+
+func (s *ReDoContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+}
+
+func (s *ReDoContinuousQueryStatement) DefaultDatabase() string {
+	return s.Database
+}
+
+
 
 // ShowMeasurementCardinalityStatement represents a command for listing measurement cardinality.
 type ShowMeasurementCardinalityStatement struct {
@@ -2812,6 +2950,43 @@ func (s *DropMeasurementStatement) String() string {
 
 // RequiredPrivileges returns the privilege(s) required to execute a DropMeasurementStatement
 func (s *DropMeasurementStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
+}
+
+type DisableProxyStatement struct {
+	// Name of the measurement to be dropped.
+	Name string
+}
+
+// String returns a string representation of the drop measurement statement.
+func (s *DisableProxyStatement) String() string {
+	var buf bytes.Buffer
+	_, _ = buf.WriteString("DISABLE PROXY ")
+	_, _ = buf.WriteString(QuoteIdent(s.Name))
+	return buf.String()
+}
+
+// RequiredPrivileges returns the privilege(s) required to execute a DropMeasurementStatement
+func (s *DisableProxyStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
+}
+
+
+type EnableProxyStatement struct {
+	// Name of the measurement to be dropped.
+	Name string
+}
+
+// String returns a string representation of the drop measurement statement.
+func (s *EnableProxyStatement) String() string {
+	var buf bytes.Buffer
+	_, _ = buf.WriteString("ENABLE PROXY ")
+	_, _ = buf.WriteString(QuoteIdent(s.Name))
+	return buf.String()
+}
+
+// RequiredPrivileges returns the privilege(s) required to execute a DropMeasurementStatement
+func (s *EnableProxyStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
 	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
 }
 
