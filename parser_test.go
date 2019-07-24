@@ -2865,12 +2865,12 @@ func TestParser_ParseStatement(t *testing.T) {
 				RetentionPolicyReplication:        intptr(2),
 				RetentionPolicyShardGroupDuration: 10 * time.Minute,
 				ClusterOptions: influxql.ClusterOptions{
-					Key:       []string{"key1", "key2"},
+					Key: []string{"key1", "key2"},
 					Selector: map[string]string{
-						"a":"b",
-						"c":"d",
+						"a": "b",
+						"c": "d",
 					},
-					Nodes:[]string{"n1"},
+					Nodes:     []string{"n1"},
 					Mode:      "RO",
 					Partition: 3,
 				},
@@ -3159,7 +3159,7 @@ func TestParser_ParseStatement(t *testing.T) {
 				ClusterOptions: influxql.ClusterOptions{
 					Partition: 4,
 					Key:       []string{"a"},
-					Selector:     map[string]string{
+					Selector: map[string]string{
 						"a": "b",
 						"c": "d",
 					},
@@ -3285,7 +3285,7 @@ func TestParser_ParseStatement(t *testing.T) {
 					Mode:   "WO",
 					Enable: influxql.Boolptr(true),
 				},
-				NameOnly:true,
+				NameOnly: true,
 			},
 		},
 		{
@@ -3304,11 +3304,42 @@ func TestParser_ParseStatement(t *testing.T) {
 				Names: []string{"n1:8888", "n1:7777"},
 			},
 		},
-
+		{
+			s:    "SHOW PROXIES",
+			stmt: &influxql.ShowProxiesStatement{},
+		},
+		{
+			s: "DISABLE PROXY proxytest ",
+			stmt: &influxql.DisableProxyStatement{
+				Name: "proxytest",
+			},
+		},
+		{
+			s: "ENABLE PROXY proxytest ",
+			stmt: &influxql.EnableProxyStatement{
+				Name: "proxytest",
+			},
+		},
+		{
+			s: "START ALL CONTINUOUS QUERIES ON testdb ",
+			stmt: &influxql.StartAllContinuousQueryStatement{
+				Database: "testdb",
+			},
+		},
+		{
+			s: "STOP ALL CONTINUOUS QUERIES ON testdb ",
+			stmt: &influxql.StopAllContinuousQueryStatement{
+				Database: "testdb",
+			},
+		},
+		{
+			s:    "REBALANCE CONTINUOUS QUERY ",
+			stmt: &influxql.RebalanceContinuousQueryStatement{},
+		},
 		// Errors
-		{s: ``, err: `found EOF, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
+		{s: ``, err: `found EOF, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
 		{s: `SELECT`, err: `found EOF, expected identifier, string, number, bool at line 1, char 8`},
-		{s: `blah blah`, err: `found blah, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
+		{s: `blah blah`, err: `found blah, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
 		{s: `SELECT field1 X`, err: `found X, expected FROM at line 1, char 15`},
 		{s: `SELECT field1 FROM "series" WHERE X +;`, err: `found ;, expected identifier, string, number, bool at line 1, char 38`},
 		{s: `SELECT field1 FROM myseries GROUP`, err: `found EOF, expected BY at line 1, char 35`},
@@ -3354,7 +3385,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `SHOW RETENTION ON`, err: `found ON, expected POLICIES at line 1, char 16`},
 		{s: `SHOW RETENTION POLICIES ON`, err: `found EOF, expected identifier at line 1, char 28`},
 		{s: `SHOW SHARD`, err: `found EOF, expected GROUPS at line 1, char 12`},
-		{s: `SHOW FOO`, err: `found FOO, expected CONTINUOUS, DATABASES, DIAGNOSTICS, FIELD, GRANTS, MEASUREMENT, MEASUREMENTS, QUERIES, RETENTION, SERIES, SHARD, SHARDS, STATS, SUBSCRIPTIONS, TAG, USERS, NODES at line 1, char 6`},
+		{s: `SHOW FOO`, err: `found FOO, expected CONTINUOUS, DATABASES, PROXIES, DIAGNOSTICS, FIELD, GRANTS, MEASUREMENT, MEASUREMENTS, QUERIES, RETENTION, SERIES, SHARD, SHARDS, STATS, SUBSCRIPTIONS, TAG, USERS, NODES at line 1, char 6`},
 		{s: `SHOW STATS FOR`, err: `found EOF, expected string at line 1, char 16`},
 		{s: `SHOW DIAGNOSTICS FOR`, err: `found EOF, expected string at line 1, char 22`},
 		{s: `SHOW GRANTS`, err: `found EOF, expected FOR at line 1, char 13`},
@@ -3494,7 +3525,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `SET PASSWORD FOR dejan`, err: `found EOF, expected = at line 1, char 24`},
 		{s: `SET PASSWORD FOR dejan =`, err: `found EOF, expected string at line 1, char 25`},
 		{s: `SET PASSWORD FOR dejan = bla`, err: `found bla, expected string at line 1, char 26`},
-		{s: `$SHOW$DATABASES`, err: `found $SHOW, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
+		{s: `$SHOW$DATABASES`, err: `found $SHOW, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
 		{s: `SELECT * FROM cpu WHERE "tagkey" = $$`, err: `empty bound parameter`},
 	}
 

@@ -12,8 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	internal "github.com/influxdata/influxql/internal"
+
+	"github.com/gogo/protobuf/proto"
 )
 
 // DataType represents the primitive data types available in InfluxQL.
@@ -219,8 +220,8 @@ func (*DeleteStatement) node()                     {}
 func (*DropContinuousQueryStatement) node()        {}
 func (*DropDatabaseStatement) node()               {}
 func (*DropMeasurementStatement) node()            {}
-func (*DisableProxyStatement) node()            {}
-func (*EnableProxyStatement) node()            {}
+func (*DisableProxyStatement) node()               {}
+func (*EnableProxyStatement) node()                {}
 func (*DropRetentionPolicyStatement) node()        {}
 func (*DropSeriesStatement) node()                 {}
 func (*DropShardStatement) node()                  {}
@@ -237,7 +238,7 @@ func (*SetPasswordUserStatement) node()            {}
 func (*ShowContinuousQueriesStatement) node()      {}
 func (*ShowGrantsForUserStatement) node()          {}
 func (*ShowDatabasesStatement) node()              {}
-func (*ShowProxiesStatement) node()              {}
+func (*ShowProxiesStatement) node()                {}
 func (*ShowFieldKeyCardinalityStatement) node()    {}
 func (*ShowFieldKeysStatement) node()              {}
 func (*ShowRetentionPoliciesStatement) node()      {}
@@ -257,43 +258,43 @@ func (*ShowTagValuesCardinalityStatement) node()   {}
 func (*ShowTagValuesStatement) node()              {}
 func (*ShowUsersStatement) node()                  {}
 
-func (*BinaryExpr) node()           {}
-func (*BooleanLiteral) node()       {}
-func (*BoundParameter) node()       {}
-func (*Call) node()                 {}
-func (*Dimension) node()            {}
-func (Dimensions) node()            {}
-func (*DurationLiteral) node()      {}
-func (*IntegerLiteral) node()       {}
-func (*UnsignedLiteral) node()      {}
-func (*Field) node()                {}
-func (Fields) node()                {}
-func (*Measurement) node()          {}
-func (Measurements) node()          {}
-func (*NilLiteral) node()           {}
-func (*NumberLiteral) node()        {}
-func (*ParenExpr) node()            {}
-func (*RegexLiteral) node()         {}
-func (*ListLiteral) node()          {}
-func (*SortField) node()            {}
-func (SortFields) node()            {}
-func (Sources) node()               {}
-func (*StringLiteral) node()        {}
-func (*SubQuery) node()             {}
-func (*Target) node()               {}
-func (*TimeLiteral) node()          {}
-func (*VarRef) node()               {}
-func (*Wildcard) node()             {}
-func (*CreateNodesStatement) node() {}
-func (*DropNodesStatement) node()   {}
-func (*AlterNodesStatement) node()  {}
-func (*ShowNodesStatements) node()  {}
-func (*StartContinuousQueryStatement) node()        {}
-func (*StopContinuousQueryStatement) node()        {}
-func (*RebalanceContinuousQueryStatement) node()        {}
-func (*ReDoContinuousQueryStatement) node() {}
-func (*StopAllContinuousQueryStatement) node()        {}
-func (*StartAllContinuousQueryStatement) node()        {}
+func (*BinaryExpr) node()                        {}
+func (*BooleanLiteral) node()                    {}
+func (*BoundParameter) node()                    {}
+func (*Call) node()                              {}
+func (*Dimension) node()                         {}
+func (Dimensions) node()                         {}
+func (*DurationLiteral) node()                   {}
+func (*IntegerLiteral) node()                    {}
+func (*UnsignedLiteral) node()                   {}
+func (*Field) node()                             {}
+func (Fields) node()                             {}
+func (*Measurement) node()                       {}
+func (Measurements) node()                       {}
+func (*NilLiteral) node()                        {}
+func (*NumberLiteral) node()                     {}
+func (*ParenExpr) node()                         {}
+func (*RegexLiteral) node()                      {}
+func (*ListLiteral) node()                       {}
+func (*SortField) node()                         {}
+func (SortFields) node()                         {}
+func (Sources) node()                            {}
+func (*StringLiteral) node()                     {}
+func (*SubQuery) node()                          {}
+func (*Target) node()                            {}
+func (*TimeLiteral) node()                       {}
+func (*VarRef) node()                            {}
+func (*Wildcard) node()                          {}
+func (*CreateNodesStatement) node()              {}
+func (*DropNodesStatement) node()                {}
+func (*AlterNodesStatement) node()               {}
+func (*ShowNodesStatements) node()               {}
+func (*StartContinuousQueryStatement) node()     {}
+func (*StopContinuousQueryStatement) node()      {}
+func (*RebalanceContinuousQueryStatement) node() {}
+func (*ReDoContinuousQueryStatement) node()      {}
+func (*StopAllContinuousQueryStatement) node()   {}
+func (*StartAllContinuousQueryStatement) node()  {}
 
 // Query represents a collection of ordered statements.
 type Query struct {
@@ -360,8 +361,8 @@ func (*DeleteStatement) stmt()                     {}
 func (*DropContinuousQueryStatement) stmt()        {}
 func (*DropDatabaseStatement) stmt()               {}
 func (*DropMeasurementStatement) stmt()            {}
-func (*DisableProxyStatement) stmt()            {}
-func (*EnableProxyStatement) stmt()            {}
+func (*DisableProxyStatement) stmt()               {}
+func (*EnableProxyStatement) stmt()                {}
 func (*DropRetentionPolicyStatement) stmt()        {}
 func (*DropSeriesStatement) stmt()                 {}
 func (*DropSubscriptionStatement) stmt()           {}
@@ -373,7 +374,7 @@ func (*KillQueryStatement) stmt()                  {}
 func (*ShowContinuousQueriesStatement) stmt()      {}
 func (*ShowGrantsForUserStatement) stmt()          {}
 func (*ShowDatabasesStatement) stmt()              {}
-func (*ShowProxiesStatement) stmt()              {}
+func (*ShowProxiesStatement) stmt()                {}
 func (*ShowFieldKeyCardinalityStatement) stmt()    {}
 func (*ShowFieldKeysStatement) stmt()              {}
 func (*ShowMeasurementCardinalityStatement) stmt() {}
@@ -403,10 +404,11 @@ func (*AlterNodesStatement) stmt()                 {}
 func (*ShowNodesStatements) stmt()                 {}
 func (*StartContinuousQueryStatement) stmt()       {}
 func (*StopContinuousQueryStatement) stmt()        {}
-func (*RebalanceContinuousQueryStatement) stmt()        {}
-func (*ReDoContinuousQueryStatement) stmt() {}
-func (*StopAllContinuousQueryStatement) stmt()        {}
-func (*StartAllContinuousQueryStatement) stmt()        {}
+func (*RebalanceContinuousQueryStatement) stmt()   {}
+func (*ReDoContinuousQueryStatement) stmt()        {}
+func (*StopAllContinuousQueryStatement) stmt()     {}
+func (*StartAllContinuousQueryStatement) stmt()    {}
+
 // Expr represents an expression that can be evaluated to a value.
 type Expr interface {
 	Node
@@ -2693,7 +2695,7 @@ func (s *DropContinuousQueryStatement) DefaultDatabase() string {
 }
 
 type StartContinuousQueryStatement struct {
-	Name string
+	Name     string
 	Database string
 }
 
@@ -2710,7 +2712,7 @@ func (s *StartContinuousQueryStatement) DefaultDatabase() string {
 }
 
 type StopContinuousQueryStatement struct {
-	Name string
+	Name     string
 	Database string
 }
 
@@ -2732,7 +2734,7 @@ type StopAllContinuousQueryStatement struct {
 }
 
 func (s *StopAllContinuousQueryStatement) String() string {
-	return fmt.Sprintf("STOP ALL CONTINUOUS QUERY ON %s",  QuoteIdent(s.Database))
+	return fmt.Sprintf("STOP ALL CONTINUOUS QUERIES ON %s", QuoteIdent(s.Database))
 }
 
 func (s *StopAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
@@ -2749,7 +2751,7 @@ type StartAllContinuousQueryStatement struct {
 }
 
 func (s *StartAllContinuousQueryStatement) String() string {
-	return fmt.Sprintf("START ALL CONTINUOUS QUERY ON %s",  QuoteIdent(s.Database))
+	return fmt.Sprintf("START ALL CONTINUOUS QUERIES ON %s", QuoteIdent(s.Database))
 }
 
 func (s *StartAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
@@ -2760,14 +2762,13 @@ func (s *StartAllContinuousQueryStatement) DefaultDatabase() string {
 	return s.Database
 }
 
-
 type RebalanceContinuousQueryStatement struct {
-	Name string
+	Name     string
 	Database string
 }
 
 func (s *RebalanceContinuousQueryStatement) String() string {
-	return fmt.Sprintf("REBALANCE CONTINUOUS QUERYS")
+	return fmt.Sprintf("REBALANCE CONTINUOUS QUERY")
 }
 
 func (s *RebalanceContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
@@ -2778,11 +2779,9 @@ func (s *RebalanceContinuousQueryStatement) DefaultDatabase() string {
 	return s.Database
 }
 
-
-
 type ReDoContinuousQueryStatement struct {
-	Name string
-	Database string
+	Name      string
+	Database  string
 	Condition Expr
 }
 
@@ -2797,8 +2796,6 @@ func (s *ReDoContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges
 func (s *ReDoContinuousQueryStatement) DefaultDatabase() string {
 	return s.Database
 }
-
-
 
 // ShowMeasurementCardinalityStatement represents a command for listing measurement cardinality.
 type ShowMeasurementCardinalityStatement struct {
@@ -2965,7 +2962,6 @@ func (s *DisableProxyStatement) String() string {
 func (s *DisableProxyStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
 	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
 }
-
 
 type EnableProxyStatement struct {
 	// Name of the measurement to be dropped.
