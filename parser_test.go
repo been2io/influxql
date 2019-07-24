@@ -3254,13 +3254,14 @@ func TestParser_ParseStatement(t *testing.T) {
 		},
 		// NODES
 		{
-			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO ",
+			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO WEIGHT 1 ",
 			stmt: &influxql.CreateNodesStatement{
 				Hosts: []string{"n1", "n2", "n3"},
 				Ports: []int{8888, 7777},
 				NodeOptions: influxql.NodeOptions{
 					Labels: map[string]string{"a": "b"},
 					Mode:   "RO",
+					Weight: 1,
 					Enable: influxql.Boolptr(false),
 				},
 			},

@@ -604,6 +604,7 @@ type NodeOptions struct {
 	Labels map[string]string
 	Mode   string
 	Enable *bool
+	Weight int
 }
 
 func (st *NodeOptions) String() string {
@@ -615,6 +616,10 @@ func (st *NodeOptions) String() string {
 	if st.Mode == RO.String() || st.Mode == WO.String() {
 		buf.WriteString(" MODE ")
 		buf.WriteString(st.Mode)
+	}
+	if st.Weight != 0 {
+		buf.WriteString(" WEIGHT ")
+		buf.WriteString(strconv.Itoa(st.Weight))
 	}
 	if st.Enable != nil {
 		if *st.Enable {

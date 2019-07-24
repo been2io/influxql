@@ -162,6 +162,7 @@ const (
 	REDO
 	PROXY
 	PROXIES
+	WEIGHT
 	keywordEnd
 )
 
@@ -306,6 +307,7 @@ var tokens = [...]string{
 	REDO:"REDO",
 	PROXY:"PROXY",
 	PROXIES:"PROXIES",
+	WEIGHT:        "WEIGHT",
 }
 
 var keywords map[string]Token
