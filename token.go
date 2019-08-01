@@ -163,6 +163,7 @@ const (
 	PROXY
 	PROXIES
 	WEIGHT
+	ZONES
 	keywordEnd
 )
 
@@ -301,13 +302,14 @@ var tokens = [...]string{
 	ENABLE:        "ENABLE",
 	NAMEONLY:      "NAMEONLY",
 	SELECTOR:      "SELECTOR",
-	START:		   "START",
-	STOP:		   "STOP",
-	REBALANCE:"REBALANCE",
-	REDO:"REDO",
-	PROXY:"PROXY",
-	PROXIES:"PROXIES",
+	START:         "START",
+	STOP:          "STOP",
+	REBALANCE:     "REBALANCE",
+	REDO:          "REDO",
+	PROXY:         "PROXY",
+	PROXIES:       "PROXIES",
 	WEIGHT:        "WEIGHT",
+	ZONES:         "ZONES",
 }
 
 var keywords map[string]Token

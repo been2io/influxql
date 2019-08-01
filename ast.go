@@ -760,6 +760,7 @@ type ClusterOptions struct {
 	Nodes     []string
 	Selector  map[string]string
 	Mode      string
+	Zones     int
 }
 
 func (s *ClusterOptions) WriteString(buf *bytes.Buffer) {
@@ -782,6 +783,10 @@ func (s *ClusterOptions) WriteString(buf *bytes.Buffer) {
 	if s.Mode != "" {
 		_, _ = buf.WriteString(" MODE ")
 		_, _ = buf.WriteString(s.Mode)
+	}
+	if s.Zones != 0 {
+		_, _ = buf.WriteString(" ZONES ")
+		_, _ = buf.WriteString(strconv.Itoa(s.Zones))
 	}
 }
 

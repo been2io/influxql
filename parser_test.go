@@ -2837,7 +2837,7 @@ func TestParser_ParseStatement(t *testing.T) {
 			},
 		},
 		{
-			s: `CREATE DATABASE testdb WITH DURATION 24h REPLICATION 2 SHARD DURATION 10m NAME test_name KEY 'key1', 'key2' PARTITION 3 SELECTOR 'a=b','c=d' `,
+			s: `CREATE DATABASE testdb WITH DURATION 24h REPLICATION 2 SHARD DURATION 10m NAME test_name KEY 'key1', 'key2' PARTITION 3 SELECTOR 'a=b','c=d' ZONES 2 `,
 			stmt: &influxql.CreateDatabaseStatement{
 				Name:                              "testdb",
 				RetentionPolicyCreate:             true,
@@ -2851,6 +2851,7 @@ func TestParser_ParseStatement(t *testing.T) {
 						"c": "d",
 					},
 					Partition: 3,
+					Zones:     2,
 				},
 				RetentionPolicyName: "test_name",
 			},
