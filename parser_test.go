@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/influxdata/influxql"
+	"influxql"
 )
 
 // Ensure the parser can parse a multi-statement query.
@@ -2865,12 +2865,12 @@ func TestParser_ParseStatement(t *testing.T) {
 				RetentionPolicyReplication:        intptr(2),
 				RetentionPolicyShardGroupDuration: 10 * time.Minute,
 				ClusterOptions: influxql.ClusterOptions{
-					Key:       []string{"key1", "key2"},
+					Key: []string{"key1", "key2"},
 					Selector: map[string]string{
-						"a":"b",
-						"c":"d",
+						"a": "b",
+						"c": "d",
 					},
-					Nodes:[]string{"n1"},
+					Nodes:     []string{"n1"},
 					Mode:      "RO",
 					Partition: 3,
 				},
@@ -3159,7 +3159,7 @@ func TestParser_ParseStatement(t *testing.T) {
 				ClusterOptions: influxql.ClusterOptions{
 					Partition: 4,
 					Key:       []string{"a"},
-					Selector:     map[string]string{
+					Selector: map[string]string{
 						"a": "b",
 						"c": "d",
 					},
@@ -3285,7 +3285,7 @@ func TestParser_ParseStatement(t *testing.T) {
 					Mode:   "WO",
 					Enable: influxql.Boolptr(true),
 				},
-				NameOnly:true,
+				NameOnly: true,
 			},
 		},
 		{
@@ -3304,7 +3304,38 @@ func TestParser_ParseStatement(t *testing.T) {
 				Names: []string{"n1:8888", "n1:7777"},
 			},
 		},
-
+		{
+			s:    "SHOW PROXIES",
+			stmt: &influxql.ShowProxiesStatement{},
+		},
+		{
+			s: "DISABLE PROXIES 'proxy_test' ",
+			stmt: &influxql.DisableProxyStatement{
+				Name: "proxy_test",
+			},
+		},
+		{
+			s: "ENABLE PROXIES 'proxy_test' ",
+			stmt: &influxql.EnableProxyStatement{
+				Name: "proxy_test",
+			},
+		},
+		{
+			s: "START ALL CONTINUOUS QUERIES ON 'testdb' ",
+			stmt: &influxql.StartAllContinuousQueryStatement{
+				Database: "testdb",
+			},
+		},
+		{
+			s: "STOP ALL CONTINUOUS QUERIES ON 'testdb' ",
+			stmt: &influxql.StopAllContinuousQueryStatement{
+				Database: "testdb",
+			},
+		},
+		{
+			s:    "REBALANCE CONTINUOUS QUERIES ",
+			stmt: &influxql.RebalanceContinuousQueryStatement{},
+		},
 		// Errors
 		{s: ``, err: `found EOF, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
 		{s: `SELECT`, err: `found EOF, expected identifier, string, number, bool at line 1, char 8`},
@@ -3354,7 +3385,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `SHOW RETENTION ON`, err: `found ON, expected POLICIES at line 1, char 16`},
 		{s: `SHOW RETENTION POLICIES ON`, err: `found EOF, expected identifier at line 1, char 28`},
 		{s: `SHOW SHARD`, err: `found EOF, expected GROUPS at line 1, char 12`},
-		{s: `SHOW FOO`, err: `found FOO, expected CONTINUOUS, DATABASES, DIAGNOSTICS, FIELD, GRANTS, MEASUREMENT, MEASUREMENTS, QUERIES, RETENTION, SERIES, SHARD, SHARDS, STATS, SUBSCRIPTIONS, TAG, USERS, NODES at line 1, char 6`},
+		{s: `SHOW FOO`, err: `found FOO, expected CONTINUOUS, DATABASES, PROXIES, DIAGNOSTICS, FIELD, GRANTS, MEASUREMENT, MEASUREMENTS, QUERIES, RETENTION, SERIES, SHARD, SHARDS, STATS, SUBSCRIPTIONS, TAG, USERS, NODES at line 1, char 6`},
 		{s: `SHOW STATS FOR`, err: `found EOF, expected string at line 1, char 16`},
 		{s: `SHOW DIAGNOSTICS FOR`, err: `found EOF, expected string at line 1, char 22`},
 		{s: `SHOW GRANTS`, err: `found EOF, expected FOR at line 1, char 13`},
@@ -3367,8 +3398,8 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `CREATE CONTINUOUS QUERY`, err: `found EOF, expected identifier at line 1, char 25`},
 		{s: `CREATE CONTINUOUS QUERY cq ON db RESAMPLE FOR 5s BEGIN SELECT mean(value) INTO cpu_mean FROM cpu GROUP BY time(10s) END`, err: `FOR duration must be >= GROUP BY time duration: must be a minimum of 10s, got 5s`},
 		{s: `CREATE CONTINUOUS QUERY cq ON db RESAMPLE EVERY 10s FOR 5s BEGIN SELECT mean(value) INTO cpu_mean FROM cpu GROUP BY time(5s) END`, err: `FOR duration must be >= GROUP BY time duration: must be a minimum of 10s, got 5s`},
-		{s: `DROP FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, MEASUREMENT, RETENTION, SERIES, SHARD, SUBSCRIPTION, USER, NODES at line 1, char 6`},
-		{s: `CREATE FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, USER, RETENTION, SUBSCRIPTION, NODES at line 1, char 8`},
+		{s: `DROP FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, PROXIES, MEASUREMENT, RETENTION, SERIES, SHARD, SUBSCRIPTION, USER, NODES at line 1, char 6`},
+		{s: `CREATE FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, PROXIES, USER, RETENTION, SUBSCRIPTION, NODES at line 1, char 8`},
 		{s: `CREATE DATABASE`, err: `found EOF, expected identifier at line 1, char 17`},
 		{s: `CREATE DATABASE "testdb" WITH`, err: `found EOF, expected DURATION, NAME, REPLICATION, SHARD, KEY, PARTITION, NODES at line 1, char 31`},
 		{s: `CREATE DATABASE "testdb" WITH DURATION`, err: `found EOF, expected duration at line 1, char 40`},

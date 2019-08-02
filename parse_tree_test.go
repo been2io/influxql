@@ -1,11 +1,10 @@
 package influxql_test
 
 import (
+	"influxql"
 	"reflect"
 	"strings"
 	"testing"
-
-	"github.com/influxdata/influxql"
 )
 
 func TestParseTree_Clone(t *testing.T) {
