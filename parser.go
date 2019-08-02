@@ -1602,6 +1602,7 @@ func (p *Parser) parseShowDatabasesStatement() (*ShowDatabasesStatement, error) 
 func (p *Parser) parseShowProxiesStatement() (*ShowProxiesStatement, error) {
 	return &ShowProxiesStatement{}, nil
 }
+
 // parseCreateContinuousQueriesStatement parses a string and returns a CreateContinuousQueryStatement.
 // This function assumes the "CREATE CONTINUOUS" tokens have already been consumed.
 func (p *Parser) parseCreateContinuousQueryStatement() (*CreateContinuousQueryStatement, error) {
@@ -1747,6 +1748,7 @@ Loop:
 			}
 		case DEFAULT:
 			stmt.Default = true
+
 		default:
 			p.Unscan()
 			break Loop
@@ -1806,6 +1808,12 @@ func (p *Parser) parseClusterOptions(stmt *ClusterOptions) (int, error) {
 				return len(found), errors.New("expect RO,WO or RW after MODE")
 			}
 			stmt.Mode = t.String()
+		case ZONES:
+			if i, err := p.ParseInt(0, 10); err == nil {
+				stmt.Zones = i
+			} else {
+				return len(found), err
+			}
 		default:
 			p.Unscan()
 			return len(found), nil
@@ -1990,6 +1998,12 @@ func (p *Parser) parseNodeOptions() (*NodeOptions, map[Token]struct{}, error) {
 			stmt.Enable = Boolptr(false)
 		case ENABLE:
 			stmt.Enable = Boolptr(true)
+		case WEIGHT:
+			t, err := p.ParseInt(-10000, 10000)
+			if err != nil {
+				return nil, found, err
+			}
+			stmt.Weight = t
 		default:
 			p.Unscan()
 			return stmt, found, nil
@@ -2390,7 +2404,6 @@ func (p *Parser) parseStartAllContinuousQueryStatement() (*StartAllContinuousQue
 	return stmt, nil
 }
 
-
 func (p *Parser) parseRebalanceContinuousQueryStatement() (*RebalanceContinuousQueryStatement, error) {
 	stmt := &RebalanceContinuousQueryStatement{}
 
@@ -2452,12 +2465,8 @@ func (p *Parser) parseReDoContinuousQueryStatement() (*ReDoContinuousQueryStatem
 		return nil, err
 	}
 
-
 	return stmt, nil
 }
-
-
-
 
 // parseFields parses a list of one or more fields.
 func (p *Parser) parseFields() (Fields, error) {

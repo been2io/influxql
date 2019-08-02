@@ -2837,7 +2837,7 @@ func TestParser_ParseStatement(t *testing.T) {
 			},
 		},
 		{
-			s: `CREATE DATABASE testdb WITH DURATION 24h REPLICATION 2 SHARD DURATION 10m NAME test_name KEY 'key1', 'key2' PARTITION 3 SELECTOR 'a=b','c=d' `,
+			s: `CREATE DATABASE testdb WITH DURATION 24h REPLICATION 2 SHARD DURATION 10m NAME test_name KEY 'key1', 'key2' PARTITION 3 SELECTOR 'a=b','c=d' ZONES 2 `,
 			stmt: &influxql.CreateDatabaseStatement{
 				Name:                              "testdb",
 				RetentionPolicyCreate:             true,
@@ -2851,6 +2851,7 @@ func TestParser_ParseStatement(t *testing.T) {
 						"c": "d",
 					},
 					Partition: 3,
+					Zones:     2,
 				},
 				RetentionPolicyName: "test_name",
 			},
@@ -3254,13 +3255,14 @@ func TestParser_ParseStatement(t *testing.T) {
 		},
 		// NODES
 		{
-			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO ",
+			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO WEIGHT 1 ",
 			stmt: &influxql.CreateNodesStatement{
 				Hosts: []string{"n1", "n2", "n3"},
 				Ports: []int{8888, 7777},
 				NodeOptions: influxql.NodeOptions{
 					Labels: map[string]string{"a": "b"},
 					Mode:   "RO",
+					Weight: 1,
 					Enable: influxql.Boolptr(false),
 				},
 			},
@@ -3309,37 +3311,37 @@ func TestParser_ParseStatement(t *testing.T) {
 			stmt: &influxql.ShowProxiesStatement{},
 		},
 		{
-			s: "DISABLE PROXIES 'proxy_test' ",
+			s: "DISABLE PROXY proxytest ",
 			stmt: &influxql.DisableProxyStatement{
-				Name: "proxy_test",
+				Name: "proxytest",
 			},
 		},
 		{
-			s: "ENABLE PROXIES 'proxy_test' ",
+			s: "ENABLE PROXY proxytest ",
 			stmt: &influxql.EnableProxyStatement{
-				Name: "proxy_test",
+				Name: "proxytest",
 			},
 		},
 		{
-			s: "START ALL CONTINUOUS QUERIES ON 'testdb' ",
+			s: "START ALL CONTINUOUS QUERIES ON testdb ",
 			stmt: &influxql.StartAllContinuousQueryStatement{
 				Database: "testdb",
 			},
 		},
 		{
-			s: "STOP ALL CONTINUOUS QUERIES ON 'testdb' ",
+			s: "STOP ALL CONTINUOUS QUERIES ON testdb ",
 			stmt: &influxql.StopAllContinuousQueryStatement{
 				Database: "testdb",
 			},
 		},
 		{
-			s:    "REBALANCE CONTINUOUS QUERIES ",
+			s:    "REBALANCE CONTINUOUS QUERY ",
 			stmt: &influxql.RebalanceContinuousQueryStatement{},
 		},
 		// Errors
-		{s: ``, err: `found EOF, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
+		{s: ``, err: `found EOF, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
 		{s: `SELECT`, err: `found EOF, expected identifier, string, number, bool at line 1, char 8`},
-		{s: `blah blah`, err: `found blah, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
+		{s: `blah blah`, err: `found blah, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
 		{s: `SELECT field1 X`, err: `found X, expected FROM at line 1, char 15`},
 		{s: `SELECT field1 FROM "series" WHERE X +;`, err: `found ;, expected identifier, string, number, bool at line 1, char 38`},
 		{s: `SELECT field1 FROM myseries GROUP`, err: `found EOF, expected BY at line 1, char 35`},
@@ -3525,7 +3527,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `SET PASSWORD FOR dejan`, err: `found EOF, expected = at line 1, char 24`},
 		{s: `SET PASSWORD FOR dejan =`, err: `found EOF, expected string at line 1, char 25`},
 		{s: `SET PASSWORD FOR dejan = bla`, err: `found bla, expected string at line 1, char 26`},
-		{s: `$SHOW$DATABASES`, err: `found $SHOW, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL at line 1, char 1`},
+		{s: `$SHOW$DATABASES`, err: `found $SHOW, expected SELECT, DELETE, SHOW, CREATE, DROP, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
 		{s: `SELECT * FROM cpu WHERE "tagkey" = $$`, err: `empty bound parameter`},
 	}
 

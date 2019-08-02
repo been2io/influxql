@@ -12,8 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	internal "github.com/influxdata/influxql/internal"
+
+	"github.com/gogo/protobuf/proto"
 )
 
 // DataType represents the primitive data types available in InfluxQL.
@@ -603,6 +604,7 @@ type NodeOptions struct {
 	Labels map[string]string
 	Mode   string
 	Enable *bool
+	Weight int
 }
 
 func (st *NodeOptions) String() string {
@@ -614,6 +616,10 @@ func (st *NodeOptions) String() string {
 	if st.Mode == RO.String() || st.Mode == WO.String() {
 		buf.WriteString(" MODE ")
 		buf.WriteString(st.Mode)
+	}
+	if st.Weight != 0 {
+		buf.WriteString(" WEIGHT ")
+		buf.WriteString(strconv.Itoa(st.Weight))
 	}
 	if st.Enable != nil {
 		if *st.Enable {
@@ -754,6 +760,7 @@ type ClusterOptions struct {
 	Nodes     []string
 	Selector  map[string]string
 	Mode      string
+	Zones     int
 }
 
 func (s *ClusterOptions) WriteString(buf *bytes.Buffer) {
@@ -776,6 +783,10 @@ func (s *ClusterOptions) WriteString(buf *bytes.Buffer) {
 	if s.Mode != "" {
 		_, _ = buf.WriteString(" MODE ")
 		_, _ = buf.WriteString(s.Mode)
+	}
+	if s.Zones != 0 {
+		_, _ = buf.WriteString(" ZONES ")
+		_, _ = buf.WriteString(strconv.Itoa(s.Zones))
 	}
 }
 
@@ -2733,7 +2744,7 @@ type StopAllContinuousQueryStatement struct {
 }
 
 func (s *StopAllContinuousQueryStatement) String() string {
-	return fmt.Sprintf("STOP ALL CONTINUOUS QUERY ON %s", QuoteIdent(s.Database))
+	return fmt.Sprintf("STOP ALL CONTINUOUS QUERIES ON %s", QuoteIdent(s.Database))
 }
 
 func (s *StopAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
@@ -2750,7 +2761,7 @@ type StartAllContinuousQueryStatement struct {
 }
 
 func (s *StartAllContinuousQueryStatement) String() string {
-	return fmt.Sprintf("START ALL CONTINUOUS QUERY ON %s", QuoteIdent(s.Database))
+	return fmt.Sprintf("START ALL CONTINUOUS QUERIES ON %s", QuoteIdent(s.Database))
 }
 
 func (s *StartAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
@@ -2767,7 +2778,7 @@ type RebalanceContinuousQueryStatement struct {
 }
 
 func (s *RebalanceContinuousQueryStatement) String() string {
-	return fmt.Sprintf("REBALANCE CONTINUOUS QUERYS")
+	return fmt.Sprintf("REBALANCE CONTINUOUS QUERY")
 }
 
 func (s *RebalanceContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
