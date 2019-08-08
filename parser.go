@@ -1500,12 +1500,23 @@ func (p *Parser) parseDisableProxyStatement() (*DisableProxyStatement, error) {
 func (p *Parser) parseEnableProxyStatement() (*EnableProxyStatement, error) {
 	stmt := &EnableProxyStatement{}
 
-	// Parse the name of the measurement to be dropped.
 	lit, err := p.ParseIdent()
 	if err != nil {
 		return nil, err
 	}
 	stmt.Name = lit
+
+	return stmt, nil
+}
+
+func (p *Parser) parseEnableAuthStatement() (*EnableAuthStatement, error) {
+	stmt := &EnableAuthStatement{}
+
+	return stmt, nil
+}
+
+func (p *Parser) parseDisableAuthStatement() (*DisableAuthStatement, error) {
+	stmt := &DisableAuthStatement{}
 
 	return stmt, nil
 }
@@ -1821,60 +1832,60 @@ func (p *Parser) parseClusterOptions(stmt *ClusterOptions) (int, error) {
 		found[tok] = struct{}{}
 	}
 	/*
-	// Look for "KEY"
-	if err := p.parseTokens([]Token{KEY}); err != nil {
-		p.Unscan()
-	} else {
-		key, err := p.parseStringList()
-		if err != nil {
-			return err
-		}
-		stmt.Key = key
-	}
-
-	// Look for "PARTITION"
-	if err := p.parseTokens([]Token{PARTITION}); err != nil {
-		p.Unscan()
-	} else {
-		partition, err := p.ParseInt(1, math.MaxInt32)
-		if err != nil {
-			return err
-		}
-		stmt.Partition = partition
-	}
-
-	// Look for "NODES"
-	if err := p.parseTokens([]Token{NODES}); err != nil {
-		p.Unscan()
-	} else {
-		stmt.Nodes, err = p.parseStringList()
-		if err != nil {
-			return err
-		}
-
-	}
-
-	// Look for "MODE"
-	if err := p.parseTokens([]Token{MODE}); err != nil {
-		p.Unscan()
-	} else {
-		err := p.parseTokens([]Token{READ})
-		if err != nil {
+		// Look for "KEY"
+		if err := p.parseTokens([]Token{KEY}); err != nil {
 			p.Unscan()
 		} else {
-			stmt.Mode = READ.String()
-		}
-		err = p.parseTokens([]Token{WRITE})
-		if err != nil {
-			p.Unscan()
-		} else {
-			stmt.Mode = WRITE.String()
-		}
-		if stmt.Mode == "" {
-			return errors.New("expect READ or WRITE after MODE")
+			key, err := p.parseStringList()
+			if err != nil {
+				return err
+			}
+			stmt.Key = key
 		}
 
-	}*/
+		// Look for "PARTITION"
+		if err := p.parseTokens([]Token{PARTITION}); err != nil {
+			p.Unscan()
+		} else {
+			partition, err := p.ParseInt(1, math.MaxInt32)
+			if err != nil {
+				return err
+			}
+			stmt.Partition = partition
+		}
+
+		// Look for "NODES"
+		if err := p.parseTokens([]Token{NODES}); err != nil {
+			p.Unscan()
+		} else {
+			stmt.Nodes, err = p.parseStringList()
+			if err != nil {
+				return err
+			}
+
+		}
+
+		// Look for "MODE"
+		if err := p.parseTokens([]Token{MODE}); err != nil {
+			p.Unscan()
+		} else {
+			err := p.parseTokens([]Token{READ})
+			if err != nil {
+				p.Unscan()
+			} else {
+				stmt.Mode = READ.String()
+			}
+			err = p.parseTokens([]Token{WRITE})
+			if err != nil {
+				p.Unscan()
+			} else {
+				stmt.Mode = WRITE.String()
+			}
+			if stmt.Mode == "" {
+				return errors.New("expect READ or WRITE after MODE")
+			}
+
+		}*/
 	return len(found), nil
 }
 
@@ -3508,7 +3519,7 @@ var (
 func QuoteString(s string) string {
 	return `'` + qsReplacer.Replace(s) + `'`
 }
-func QuoteStringList(l [] string) string {
+func QuoteStringList(l []string) string {
 	for i, s := range l {
 		l[i] = QuoteString(s)
 	}
