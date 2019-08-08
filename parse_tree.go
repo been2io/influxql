@@ -280,7 +280,7 @@ func init() {
 		enable.Handle(AUTH, func(p *Parser) (Statement, error) {
 			return p.parseEnableAuthStatement()
 		})
-	}
+	})
 	Language.Group(DISABLE).With(func(disable *ParseTree) {
 		disable.Handle(PROXY, func(p *Parser) (Statement, error) {
 			return p.parseDisableProxyStatement()
@@ -288,5 +288,5 @@ func init() {
 		disable.Handle(AUTH, func(p *Parser) (Statement, error) {
 			return p.parseDisableAuthStatement()
 		})
-	}
+	})
 }
