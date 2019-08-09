@@ -2605,7 +2605,7 @@ func (s *ShowProxiesStatement) RequiredPrivileges() (ExecutionPrivileges, error)
 	// SHOW DATABASES is one of few statements that have no required privileges.
 	// Anyone is allowed to execute it, but the returned results depend on the user's
 	// individual database permissions.
-	return ExecutionPrivileges{{Admin: false, Name: "", Privilege: NoPrivileges}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: NoPrivileges}}, nil
 }
 
 // CreateContinuousQueryStatement represents a command for creating a continuous query.
@@ -2752,7 +2752,7 @@ func (s *StopAllContinuousQueryStatement) String() string {
 }
 
 func (s *StopAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *StopAllContinuousQueryStatement) DefaultDatabase() string {
@@ -2769,7 +2769,7 @@ func (s *StartAllContinuousQueryStatement) String() string {
 }
 
 func (s *StartAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *StartAllContinuousQueryStatement) DefaultDatabase() string {
@@ -2786,7 +2786,7 @@ func (s *RebalanceContinuousQueryStatement) String() string {
 }
 
 func (s *RebalanceContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *RebalanceContinuousQueryStatement) DefaultDatabase() string {
@@ -2804,7 +2804,7 @@ func (s *ReDoContinuousQueryStatement) String() string {
 }
 
 func (s *ReDoContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *ReDoContinuousQueryStatement) DefaultDatabase() string {

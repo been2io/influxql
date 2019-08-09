@@ -267,12 +267,6 @@ func init() {
 	Language.Group(STOP, ALL, CONTINUOUS).Handle(QUERIES, func(p *Parser) (Statement, error) {
 		return p.parseStopAllContinuousQueryStatement()
 	})
-	// Language.Group(DISABLE).Handle(PROXY, func(p *Parser) (Statement, error) {
-	// 	return p.parseDisableProxyStatement()
-	// })
-	// Language.Group(ENABLE).Handle(PROXY, func(p *Parser) (Statement, error) {
-	// 	return p.parseEnableProxyStatement()
-	// })
 	Language.Group(ENABLE).With(func(enable *ParseTree) {
 		enable.Handle(PROXY, func(p *Parser) (Statement, error) {
 			return p.parseEnableProxyStatement()
