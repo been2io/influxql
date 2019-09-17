@@ -222,6 +222,8 @@ func (*DropDatabaseStatement) node()               {}
 func (*DropMeasurementStatement) node()            {}
 func (*DisableProxyStatement) node()               {}
 func (*EnableProxyStatement) node()                {}
+func (*EnableAuthStatement) node()                 {}
+func (*DisableAuthStatement) node()                {}
 func (*DropRetentionPolicyStatement) node()        {}
 func (*DropSeriesStatement) node()                 {}
 func (*DropShardStatement) node()                  {}
@@ -363,6 +365,8 @@ func (*DropDatabaseStatement) stmt()               {}
 func (*DropMeasurementStatement) stmt()            {}
 func (*DisableProxyStatement) stmt()               {}
 func (*EnableProxyStatement) stmt()                {}
+func (*EnableAuthStatement) stmt()                 {}
+func (*DisableAuthStatement) stmt()                {}
 func (*DropRetentionPolicyStatement) stmt()        {}
 func (*DropSeriesStatement) stmt()                 {}
 func (*DropSubscriptionStatement) stmt()           {}
@@ -2603,7 +2607,7 @@ func (s *ShowProxiesStatement) RequiredPrivileges() (ExecutionPrivileges, error)
 	// SHOW DATABASES is one of few statements that have no required privileges.
 	// Anyone is allowed to execute it, but the returned results depend on the user's
 	// individual database permissions.
-	return ExecutionPrivileges{{Admin: false, Name: "", Privilege: NoPrivileges}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: NoPrivileges}}, nil
 }
 
 // CreateContinuousQueryStatement represents a command for creating a continuous query.
@@ -2750,7 +2754,7 @@ func (s *StopAllContinuousQueryStatement) String() string {
 }
 
 func (s *StopAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *StopAllContinuousQueryStatement) DefaultDatabase() string {
@@ -2767,7 +2771,7 @@ func (s *StartAllContinuousQueryStatement) String() string {
 }
 
 func (s *StartAllContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *StartAllContinuousQueryStatement) DefaultDatabase() string {
@@ -2784,7 +2788,7 @@ func (s *RebalanceContinuousQueryStatement) String() string {
 }
 
 func (s *RebalanceContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *RebalanceContinuousQueryStatement) DefaultDatabase() string {
@@ -2802,7 +2806,7 @@ func (s *ReDoContinuousQueryStatement) String() string {
 }
 
 func (s *ReDoContinuousQueryStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
-	return ExecutionPrivileges{{Admin: false, Name: s.Database, Privilege: WritePrivilege}}, nil
+	return ExecutionPrivileges{{Admin: true, Name: s.Database, Privilege: WritePrivilege}}, nil
 }
 
 func (s *ReDoContinuousQueryStatement) DefaultDatabase() string {
@@ -2990,6 +2994,38 @@ func (s *EnableProxyStatement) String() string {
 
 // RequiredPrivileges returns the privilege(s) required to execute a DropMeasurementStatement
 func (s *EnableProxyStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
+}
+
+type EnableAuthStatement struct {
+	// Name of the measurement to be dropped.
+}
+
+// String returns a string representation of the drop measurement statement.
+func (s *EnableAuthStatement) String() string {
+	var buf bytes.Buffer
+	_, _ = buf.WriteString("ENABLE AUTH")
+	return buf.String()
+}
+
+// RequiredPrivileges returns the privilege(s) required to execute a DropMeasurementStatement
+func (s *EnableAuthStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
+}
+
+type DisableAuthStatement struct {
+	// Name of the measurement to be dropped.
+}
+
+// String returns a string representation of the drop measurement statement.
+func (s *DisableAuthStatement) String() string {
+	var buf bytes.Buffer
+	_, _ = buf.WriteString("DISABLE AUTH")
+	return buf.String()
+}
+
+// RequiredPrivileges returns the privilege(s) required to execute a DropMeasurementStatement
+func (s *DisableAuthStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
 	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
 }
 

@@ -17,51 +17,51 @@ const (
 
 	literalBeg
 	// IDENT and the following are InfluxQL literal tokens.
-	IDENT        // main
-	BOUNDPARAM   // $param
-	NUMBER       // 12345.67
-	INTEGER      // 12345
-	DURATIONVAL  // 13h
-	STRING       // "abc"
-	BADSTRING    // "abc
-	BADESCAPE    // \q
-	TRUE         // true
-	FALSE        // false
-	REGEX        // Regular expressions
-	BADREGEX     // `.*
+	IDENT       // main
+	BOUNDPARAM  // $param
+	NUMBER      // 12345.67
+	INTEGER     // 12345
+	DURATIONVAL // 13h
+	STRING      // "abc"
+	BADSTRING   // "abc
+	BADESCAPE   // \q
+	TRUE        // true
+	FALSE       // false
+	REGEX       // Regular expressions
+	BADREGEX    // `.*
 	literalEnd
 
 	operatorBeg
 	// ADD and the following are InfluxQL Operators
-	ADD          // +
-	SUB          // -
-	MUL          // *
-	DIV          // /
-	MOD          // %
-	BITWISE_AND  // &
-	BITWISE_OR   // |
-	BITWISE_XOR  // ^
+	ADD         // +
+	SUB         // -
+	MUL         // *
+	DIV         // /
+	MOD         // %
+	BITWISE_AND // &
+	BITWISE_OR  // |
+	BITWISE_XOR // ^
 
-	AND  // AND
-	OR   // OR
+	AND // AND
+	OR  // OR
 
-	EQ        // =
-	NEQ       // !=
-	EQREGEX   // =~
-	NEQREGEX  // !~
-	LT        // <
-	LTE       // <=
-	GT        // >
-	GTE       // >=
+	EQ       // =
+	NEQ      // !=
+	EQREGEX  // =~
+	NEQREGEX // !~
+	LT       // <
+	LTE      // <=
+	GT       // >
+	GTE      // >=
 	operatorEnd
 
-	LPAREN       // (
-	RPAREN       // )
-	COMMA        // ,
-	COLON        // :
-	DOUBLECOLON  // ::
-	SEMICOLON    // ;
-	DOT          // .
+	LPAREN      // (
+	RPAREN      // )
+	COMMA       // ,
+	COLON       // :
+	DOUBLECOLON // ::
+	SEMICOLON   // ;
+	DOT         // .
 
 	keywordBeg
 	// ALL and the following are InfluxQL Keywords
@@ -164,6 +164,7 @@ const (
 	PROXIES
 	WEIGHT
 	ZONES
+	AUTH
 	keywordEnd
 )
 
@@ -310,6 +311,7 @@ var tokens = [...]string{
 	PROXIES:       "PROXIES",
 	WEIGHT:        "WEIGHT",
 	ZONES:         "ZONES",
+	AUTH:          "AUTH",
 }
 
 var keywords map[string]Token

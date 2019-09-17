@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/influxdata/influxql"
+	"influxql"
 )
 
 // Ensure the parser can parse a multi-statement query.
@@ -3412,8 +3412,8 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `CREATE CONTINUOUS QUERY`, err: `found EOF, expected identifier at line 1, char 25`},
 		{s: `CREATE CONTINUOUS QUERY cq ON db RESAMPLE FOR 5s BEGIN SELECT mean(value) INTO cpu_mean FROM cpu GROUP BY time(10s) END`, err: `FOR duration must be >= GROUP BY time duration: must be a minimum of 10s, got 5s`},
 		{s: `CREATE CONTINUOUS QUERY cq ON db RESAMPLE EVERY 10s FOR 5s BEGIN SELECT mean(value) INTO cpu_mean FROM cpu GROUP BY time(5s) END`, err: `FOR duration must be >= GROUP BY time duration: must be a minimum of 10s, got 5s`},
-		{s: `DROP FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, MEASUREMENT, RETENTION, SERIES, SHARD, SUBSCRIPTION, USER, NODES at line 1, char 6`},
-		{s: `CREATE FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, USER, RETENTION, SUBSCRIPTION, NODES at line 1, char 8`},
+		{s: `DROP FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, PROXIES, MEASUREMENT, RETENTION, SERIES, SHARD, SUBSCRIPTION, USER, NODES at line 1, char 6`},
+		{s: `CREATE FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, PROXIES, USER, RETENTION, SUBSCRIPTION, NODES at line 1, char 8`},
 		{s: `CREATE DATABASE`, err: `found EOF, expected identifier at line 1, char 17`},
 		{s: `CREATE DATABASE "testdb" WITH`, err: `found EOF, expected DURATION, NAME, REPLICATION, SHARD, KEY, PARTITION, NODES at line 1, char 31`},
 		{s: `CREATE DATABASE "testdb" WITH DURATION`, err: `found EOF, expected duration at line 1, char 40`},

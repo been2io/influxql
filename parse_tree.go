@@ -1,8 +1,6 @@
 package influxql
 
-import (
-	"fmt"
-)
+import "fmt"
 
 var Language = &ParseTree{}
 
@@ -174,7 +172,7 @@ func init() {
 		show.Handle(USERS, func(p *Parser) (Statement, error) {
 			return p.parseShowUsersStatement()
 		})
-		show.Handle(NODES, func(p *Parser) ( Statement, error) {
+		show.Handle(NODES, func(p *Parser) (Statement, error) {
 			return p.parseShowNodesStatement()
 		})
 	})
@@ -240,7 +238,7 @@ func init() {
 		alter.Group(RETENTION).Handle(POLICY, func(p *Parser) (Statement, error) {
 			return p.parseAlterRetentionPolicyStatement()
 		})
-		alter.Handle(NODES, func(parser *Parser) ( Statement,  error) {
+		alter.Handle(NODES, func(parser *Parser) (Statement, error) {
 			return parser.parseAlterNodesStatement()
 		})
 	})
@@ -251,28 +249,38 @@ func init() {
 	Language.Group(KILL).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseKillQueryStatement()
 	})
-	Language.Group(START,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+	Language.Group(START, CONTINUOUS).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseStartContinuousQueryStatement()
 	})
-	Language.Group(STOP,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+	Language.Group(STOP, CONTINUOUS).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseStopContinuousQueryStatement()
 	})
-	Language.Group(REBALANCE,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+	Language.Group(REBALANCE, CONTINUOUS).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseRebalanceContinuousQueryStatement()
 	})
-	Language.Group(REDO,CONTINUOUS).Handle(QUERY,func(p *Parser) (Statement, error) {
+	Language.Group(REDO, CONTINUOUS).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseReDoContinuousQueryStatement()
 	})
-	Language.Group(START,ALL,CONTINUOUS).Handle(QUERIES,func(p *Parser) (Statement, error) {
+	Language.Group(START, ALL, CONTINUOUS).Handle(QUERIES, func(p *Parser) (Statement, error) {
 		return p.parseStartAllContinuousQueryStatement()
 	})
-	Language.Group(STOP,ALL,CONTINUOUS).Handle(QUERIES,func(p *Parser) (Statement, error) {
+	Language.Group(STOP, ALL, CONTINUOUS).Handle(QUERIES, func(p *Parser) (Statement, error) {
 		return p.parseStopAllContinuousQueryStatement()
 	})
-	Language.Group(DISABLE).Handle(PROXY,func(p *Parser) (Statement, error) {
-		return p.parseDisableProxyStatement()
+	Language.Group(ENABLE).With(func(enable *ParseTree) {
+		enable.Handle(PROXY, func(p *Parser) (Statement, error) {
+			return p.parseEnableProxyStatement()
+		})
+		enable.Handle(AUTH, func(p *Parser) (Statement, error) {
+			return p.parseEnableAuthStatement()
+		})
 	})
-	Language.Group(ENABLE).Handle(PROXY,func(p *Parser) (Statement, error) {
-		return p.parseEnableProxyStatement()
+	Language.Group(DISABLE).With(func(disable *ParseTree) {
+		disable.Handle(PROXY, func(p *Parser) (Statement, error) {
+			return p.parseDisableProxyStatement()
+		})
+		disable.Handle(AUTH, func(p *Parser) (Statement, error) {
+			return p.parseDisableAuthStatement()
+		})
 	})
 }
