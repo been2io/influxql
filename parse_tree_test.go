@@ -1,7 +1,7 @@
 package influxql_test
 
 import (
-	"influxql"
+	"github.com/influxdata/influxql"
 	"reflect"
 	"strings"
 	"testing"
