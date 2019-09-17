@@ -1288,6 +1288,8 @@ type SelectStatement struct {
 	// The timezone for the query, if any.
 	Location *time.Location
 
+	TimeShift *time.Duration
+
 	// Renames the implicit time field name.
 	TimeAlias string
 

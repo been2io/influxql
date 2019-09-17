@@ -22,6 +22,18 @@ func TestParser_ParseQuery(t *testing.T) {
 		t.Fatalf("unexpected statement count: %d", len(q.Statements))
 	}
 }
+func TestParser_ParseQueryWithTimeShift(t *testing.T) {
+	s := `SELECT a FROM b timeShift(-1h)`
+	q, err := influxql.NewParser(strings.NewReader(s)).ParseQuery()
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	} else if len(q.Statements) != 1 {
+		t.Fatalf("unexpected statement count: %d", len(q.Statements))
+	} else if s, ok := q.Statements[0].(*influxql.SelectStatement); !ok || *s.TimeShift != -time.Hour {
+		t.Fatalf("unexpected time shift: %v", s.TimeShift)
+	}
+
+}
 
 func TestParser_ParseQuery_TrailingSemicolon(t *testing.T) {
 	s := `SELECT value FROM cpu;`

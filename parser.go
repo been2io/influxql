@@ -715,6 +715,10 @@ func (p *Parser) parseSelectStatement(tr targetRequirement) (*SelectStatement, e
 		return nil, err
 	}
 
+	if stmt.TimeShift, err = p.parseTimeShift(); err != nil {
+		return nil, err
+	}
+
 	// Set if the query is a raw data query or one with an aggregate
 	stmt.IsRawQuery = true
 	WalkFunc(stmt.Fields, func(n Node) {
@@ -2815,6 +2819,36 @@ func (p *Parser) parseLocation() (*time.Location, error) {
 		return nil, fmt.Errorf("unable to find time zone %s", tzname.Val)
 	}
 	return loc, nil
+}
+func (p *Parser) parseTimeShift() (*time.Duration, error) {
+	// Parse the expression first.
+	tok, _, lit := p.ScanIgnoreWhitespace()
+	p.Unscan()
+	if tok != IDENT || strings.ToLower(lit) != "timeshift" {
+		return nil, nil
+	}
+
+	expr, err := p.ParseExpr()
+	if err != nil {
+		return nil, err
+	}
+	tz, ok := expr.(*Call)
+	if !ok {
+		return nil, errors.New("timeShift must be a function call")
+	} else if len(tz.Args) != 1 {
+		return nil, errors.New("timeShift requires exactly one argument")
+	}
+
+	durationStr, ok := tz.Args[0].(*DurationLiteral)
+	if !ok {
+		return nil, errors.New("expected string argument in timeShift()")
+	}
+
+	if durationStr == nil{
+		// Do not pass the same error message as the error may contain sensitive pathnames.
+		return nil, fmt.Errorf("unable to find timeshift %s", durationStr.Val)
+	}
+	return &durationStr.Val, nil
 }
 
 // ParseOptionalTokenAndInt parses the specified token followed
