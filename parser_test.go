@@ -34,6 +34,18 @@ func TestParser_ParseQueryWithTimeShift(t *testing.T) {
 	}
 
 }
+func TestParser_ParseQueryWithAlign(t *testing.T) {
+	s := `SELECT a FROM b align()`
+	q, err := influxql.NewParser(strings.NewReader(s)).ParseQuery()
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	} else if len(q.Statements) != 1 {
+		t.Fatalf("unexpected statement count: %d", len(q.Statements))
+	} else if s, ok := q.Statements[0].(*influxql.SelectStatement); !ok || *s.Align != true {
+		t.Fatalf("unexpected align %v", *s.Align)
+	}
+
+}
 
 func TestParser_ParseQuery_TrailingSemicolon(t *testing.T) {
 	s := `SELECT value FROM cpu;`

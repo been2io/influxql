@@ -718,7 +718,9 @@ func (p *Parser) parseSelectStatement(tr targetRequirement) (*SelectStatement, e
 	if stmt.TimeShift, err = p.parseTimeShift(); err != nil {
 		return nil, err
 	}
-
+	if stmt.Align, err = p.parseAlign(); err != nil {
+		return nil,err
+	}
 	// Set if the query is a raw data query or one with an aggregate
 	stmt.IsRawQuery = true
 	WalkFunc(stmt.Fields, func(n Node) {
@@ -2855,11 +2857,30 @@ func (p *Parser) parseTimeShift() (*time.Duration, error) {
 		return nil, errors.New("expected string argument in timeShift()")
 	}
 
-	if durationStr == nil{
+	if durationStr == nil {
 		// Do not pass the same error message as the error may contain sensitive pathnames.
 		return nil, fmt.Errorf("unable to find timeshift %s", durationStr.Val)
 	}
 	return &durationStr.Val, nil
+}
+func (p *Parser) parseAlign() (*bool, error) {
+	// Parse the expression first.
+	tok, _, lit := p.ScanIgnoreWhitespace()
+	p.Unscan()
+	if tok != IDENT || strings.ToLower(lit) != "align" {
+		return nil, nil
+	}
+
+	expr, err := p.ParseExpr()
+	if err != nil {
+		return nil, err
+	}
+	_, ok := expr.(*Call)
+	if !ok {
+		return nil, errors.New("align must be a function call")
+	}
+	align := true
+	return &align, nil
 }
 
 // ParseOptionalTokenAndInt parses the specified token followed

@@ -1265,6 +1265,7 @@ type SelectStatement struct {
 	// Fields to sort results by.
 	SortFields SortFields
 
+	Align *bool
 	// Maximum number of rows to be returned. Unlimited if zero.
 	Limit int
 
