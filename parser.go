@@ -243,6 +243,17 @@ func (p *Parser) parseCreateRetentionPolicyStatement() (*CreateRetentionPolicySt
 	stmt.ClusterOptions = r.ClusterOptions
 	return stmt, nil
 }
+func (p *Parser) parseScaleStatement() (*ScaleClusterStatement, error) {
+	stmt := &ScaleClusterStatement{}
+	token, _, lit := p.ScanIgnoreWhitespace()
+	if token != ALL {
+		if lit == "" {
+			return nil, errors.New("database name or ALL required")
+		}
+		stmt.DB = lit
+	}
+	return stmt, nil
+}
 
 // parseAlterRetentionPolicyStatement parses a string and returns an alter retention policy statement.
 // This function assumes the ALTER RETENTION POLICY tokens have already been consumed.
@@ -719,7 +730,7 @@ func (p *Parser) parseSelectStatement(tr targetRequirement) (*SelectStatement, e
 		return nil, err
 	}
 	if stmt.Align, err = p.parseAlign(); err != nil {
-		return nil,err
+		return nil, err
 	}
 	// Set if the query is a raw data query or one with an aggregate
 	stmt.IsRawQuery = true

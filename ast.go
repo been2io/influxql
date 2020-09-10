@@ -259,44 +259,44 @@ func (*ShowTagKeysStatement) node()                {}
 func (*ShowTagValuesCardinalityStatement) node()   {}
 func (*ShowTagValuesStatement) node()              {}
 func (*ShowUsersStatement) node()                  {}
-
-func (*BinaryExpr) node()                        {}
-func (*BooleanLiteral) node()                    {}
-func (*BoundParameter) node()                    {}
-func (*Call) node()                              {}
-func (*Dimension) node()                         {}
-func (Dimensions) node()                         {}
-func (*DurationLiteral) node()                   {}
-func (*IntegerLiteral) node()                    {}
-func (*UnsignedLiteral) node()                   {}
-func (*Field) node()                             {}
-func (Fields) node()                             {}
-func (*Measurement) node()                       {}
-func (Measurements) node()                       {}
-func (*NilLiteral) node()                        {}
-func (*NumberLiteral) node()                     {}
-func (*ParenExpr) node()                         {}
-func (*RegexLiteral) node()                      {}
-func (*ListLiteral) node()                       {}
-func (*SortField) node()                         {}
-func (SortFields) node()                         {}
-func (Sources) node()                            {}
-func (*StringLiteral) node()                     {}
-func (*SubQuery) node()                          {}
-func (*Target) node()                            {}
-func (*TimeLiteral) node()                       {}
-func (*VarRef) node()                            {}
-func (*Wildcard) node()                          {}
-func (*CreateNodesStatement) node()              {}
-func (*DropNodesStatement) node()                {}
-func (*AlterNodesStatement) node()               {}
-func (*ShowNodesStatements) node()               {}
-func (*StartContinuousQueryStatement) node()     {}
-func (*StopContinuousQueryStatement) node()      {}
-func (*RebalanceContinuousQueryStatement) node() {}
-func (*ReDoContinuousQueryStatement) node()      {}
-func (*StopAllContinuousQueryStatement) node()   {}
-func (*StartAllContinuousQueryStatement) node()  {}
+func (*ScaleClusterStatement) node()               {}
+func (*BinaryExpr) node()                          {}
+func (*BooleanLiteral) node()                      {}
+func (*BoundParameter) node()                      {}
+func (*Call) node()                                {}
+func (*Dimension) node()                           {}
+func (Dimensions) node()                           {}
+func (*DurationLiteral) node()                     {}
+func (*IntegerLiteral) node()                      {}
+func (*UnsignedLiteral) node()                     {}
+func (*Field) node()                               {}
+func (Fields) node()                               {}
+func (*Measurement) node()                         {}
+func (Measurements) node()                         {}
+func (*NilLiteral) node()                          {}
+func (*NumberLiteral) node()                       {}
+func (*ParenExpr) node()                           {}
+func (*RegexLiteral) node()                        {}
+func (*ListLiteral) node()                         {}
+func (*SortField) node()                           {}
+func (SortFields) node()                           {}
+func (Sources) node()                              {}
+func (*StringLiteral) node()                       {}
+func (*SubQuery) node()                            {}
+func (*Target) node()                              {}
+func (*TimeLiteral) node()                         {}
+func (*VarRef) node()                              {}
+func (*Wildcard) node()                            {}
+func (*CreateNodesStatement) node()                {}
+func (*DropNodesStatement) node()                  {}
+func (*AlterNodesStatement) node()                 {}
+func (*ShowNodesStatements) node()                 {}
+func (*StartContinuousQueryStatement) node()       {}
+func (*StopContinuousQueryStatement) node()        {}
+func (*RebalanceContinuousQueryStatement) node()   {}
+func (*ReDoContinuousQueryStatement) node()        {}
+func (*StopAllContinuousQueryStatement) node()     {}
+func (*StartAllContinuousQueryStatement) node()    {}
 
 // Query represents a collection of ordered statements.
 type Query struct {
@@ -412,6 +412,7 @@ func (*RebalanceContinuousQueryStatement) stmt()   {}
 func (*ReDoContinuousQueryStatement) stmt()        {}
 func (*StopAllContinuousQueryStatement) stmt()     {}
 func (*StartAllContinuousQueryStatement) stmt()    {}
+func (*ScaleClusterStatement) stmt()               {}
 
 // Expr represents an expression that can be evaluated to a value.
 type Expr interface {
@@ -1227,6 +1228,25 @@ func (s *AlterRetentionPolicyStatement) RequiredPrivileges() (ExecutionPrivilege
 // DefaultDatabase returns the default database from the statement.
 func (s *AlterRetentionPolicyStatement) DefaultDatabase() string {
 	return s.Database
+}
+
+type ScaleClusterStatement struct {
+	DB string
+}
+
+func (a *ScaleClusterStatement) String() string {
+	var buf bytes.Buffer
+	buf.WriteString("SCALE ")
+	if a.DB == "" {
+		buf.WriteString("ALL")
+	} else {
+		buf.WriteString(a.DB)
+	}
+	return buf.String()
+}
+
+func (a *ScaleClusterStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
 }
 
 // FillOption represents different options for filling aggregate windows.

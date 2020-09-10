@@ -1,6 +1,8 @@
 package influxql
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var Language = &ParseTree{}
 
@@ -224,6 +226,9 @@ func init() {
 		drop.Handle(NODES, func(parser *Parser) (Statement, error) {
 			return parser.parseDropNodesStatement()
 		})
+	})
+	Language.Handle(SCALE, func(parser *Parser) (Statement, error) {
+		return parser.parseScaleStatement()
 	})
 	Language.Handle(EXPLAIN, func(p *Parser) (Statement, error) {
 		return p.parseExplainStatement()
