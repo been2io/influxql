@@ -165,7 +165,8 @@ const (
 	WEIGHT
 	ZONES
 	AUTH
-	SCALE
+	RESHARD
+	FORCE
 	keywordEnd
 )
 
@@ -313,7 +314,8 @@ var tokens = [...]string{
 	WEIGHT:        "WEIGHT",
 	ZONES:         "ZONES",
 	AUTH:          "AUTH",
-	SCALE:         "SCALE",
+	RESHARD:       "RESHARD",
+	FORCE:         "FORCE",
 }
 
 var keywords map[string]Token

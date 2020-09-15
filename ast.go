@@ -259,7 +259,7 @@ func (*ShowTagKeysStatement) node()                {}
 func (*ShowTagValuesCardinalityStatement) node()   {}
 func (*ShowTagValuesStatement) node()              {}
 func (*ShowUsersStatement) node()                  {}
-func (*ScaleClusterStatement) node()               {}
+func (*ReshardStatement) node()                    {}
 func (*BinaryExpr) node()                          {}
 func (*BooleanLiteral) node()                      {}
 func (*BoundParameter) node()                      {}
@@ -412,7 +412,7 @@ func (*RebalanceContinuousQueryStatement) stmt()   {}
 func (*ReDoContinuousQueryStatement) stmt()        {}
 func (*StopAllContinuousQueryStatement) stmt()     {}
 func (*StartAllContinuousQueryStatement) stmt()    {}
-func (*ScaleClusterStatement) stmt()               {}
+func (*ReshardStatement) stmt()                    {}
 
 // Expr represents an expression that can be evaluated to a value.
 type Expr interface {
@@ -1230,22 +1230,26 @@ func (s *AlterRetentionPolicyStatement) DefaultDatabase() string {
 	return s.Database
 }
 
-type ScaleClusterStatement struct {
-	DB string
+type ReshardStatement struct {
+	DB    string
+	Force bool
 }
 
-func (a *ScaleClusterStatement) String() string {
+func (a *ReshardStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("SCALE ")
+	buf.WriteString("RESHARD ")
 	if a.DB == "" {
 		buf.WriteString("ALL")
 	} else {
 		buf.WriteString(a.DB)
 	}
+	if a.Force {
+		buf.WriteString(" FORCE")
+	}
 	return buf.String()
 }
 
-func (a *ScaleClusterStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
+func (a *ReshardStatement) RequiredPrivileges() (ExecutionPrivileges, error) {
 	return ExecutionPrivileges{{Admin: true, Name: "", Privilege: AllPrivileges}}, nil
 }
 

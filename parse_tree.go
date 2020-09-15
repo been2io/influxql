@@ -227,8 +227,8 @@ func init() {
 			return parser.parseDropNodesStatement()
 		})
 	})
-	Language.Handle(SCALE, func(parser *Parser) (Statement, error) {
-		return parser.parseScaleStatement()
+	Language.Handle(RESHARD, func(parser *Parser) (Statement, error) {
+		return parser.parseReshardStatement()
 	})
 	Language.Handle(EXPLAIN, func(p *Parser) (Statement, error) {
 		return p.parseExplainStatement()

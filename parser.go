@@ -243,14 +243,18 @@ func (p *Parser) parseCreateRetentionPolicyStatement() (*CreateRetentionPolicySt
 	stmt.ClusterOptions = r.ClusterOptions
 	return stmt, nil
 }
-func (p *Parser) parseScaleStatement() (*ScaleClusterStatement, error) {
-	stmt := &ScaleClusterStatement{}
+func (p *Parser) parseReshardStatement() (*ReshardStatement, error) {
+	stmt := &ReshardStatement{}
 	token, _, lit := p.ScanIgnoreWhitespace()
 	if token != ALL {
 		if lit == "" {
 			return nil, errors.New("database name or ALL required")
 		}
 		stmt.DB = lit
+	}
+	t, _, _ := p.ScanIgnoreWhitespace()
+	if t == FORCE {
+		stmt.Force = true
 	}
 	return stmt, nil
 }
