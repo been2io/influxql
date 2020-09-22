@@ -287,6 +287,9 @@ func (p *Parser) parseSetStatement() (*SetStatement, error) {
 	for {
 		_, _, lit := p.ScanIgnoreWhitespace()
 		if lit == "" {
+			if  len(stmt.Setting) == 0{
+				return nil,fmt.Errorf("require %v", settings)
+			}
 			break
 		}
 		v, err := p.ParseInt(0, math.MaxInt64)
