@@ -259,6 +259,59 @@ func (p *Parser) parseReshardStatement() (*ReshardStatement, error) {
 	return stmt, nil
 }
 
+const (
+	MaxSeries            = "maxSeries"
+	MaxBuckets           = "maxBuckets"
+	MaxPoints            = "maxPoints"
+	DefaultDuration      = "defaultDuration"
+	DefaultShardDuration = "defaultShardDuration"
+	DefaultReplication   = "defaultReplication"
+	DefaultPartition     = "defaultPartition"
+)
+
+var settings []string
+
+func init() {
+	settings = []string{MaxSeries, MaxBuckets, MaxPoints, DefaultDuration, DefaultReplication, DefaultShardDuration, DefaultPartition}
+}
+
+func (p *Parser) parseSetStatement() (*SetStatement, error) {
+	stmt := &SetStatement{
+		Setting: make(map[string]int),
+	}
+	_, _, lit := p.ScanIgnoreWhitespace()
+	if lit == "" {
+		return nil, errors.New("database name or * required")
+	}
+	stmt.DB = lit
+	for {
+		_, _, lit := p.ScanIgnoreWhitespace()
+		if lit == "" {
+			if  len(stmt.Setting) == 0{
+				return nil,fmt.Errorf("require %v", settings)
+			}
+			break
+		}
+		v, err := p.ParseInt(0, math.MaxInt64)
+		if err != nil {
+			return nil, err
+		}
+
+		var found bool
+		for _, s := range settings {
+			if lit == s {
+				found = true
+				stmt.Setting[lit] = v
+			}
+		}
+		if !found {
+			return nil,fmt.Errorf("no setting named %v,require %v", lit, settings)
+		}
+	}
+	return stmt, nil
+
+}
+
 // parseAlterRetentionPolicyStatement parses a string and returns an alter retention policy statement.
 // This function assumes the ALTER RETENTION POLICY tokens have already been consumed.
 func (p *Parser) parseAlterRetentionPolicyStatement() (*AlterRetentionPolicyStatement, error) {

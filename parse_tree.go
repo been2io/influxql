@@ -247,9 +247,13 @@ func init() {
 			return parser.parseAlterNodesStatement()
 		})
 	})
-
-	Language.Group(SET, PASSWORD).Handle(FOR, func(p *Parser) (Statement, error) {
-		return p.parseSetPasswordUserStatement()
+	Language.Group(SET).With(func(tree *ParseTree) {
+		tree.Handle(DATABASE, func(parser *Parser) (Statement, error) {
+			return parser.parseSetStatement()
+		})
+		tree.Group(PASSWORD).Handle(FOR, func(parser *Parser) (Statement, error) {
+			return parser.parseSetPasswordUserStatement()
+		})
 	})
 	Language.Group(KILL).Handle(QUERY, func(p *Parser) (Statement, error) {
 		return p.parseKillQueryStatement()

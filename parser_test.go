@@ -3274,7 +3274,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{
 			s: `RESHARD ALL force`,
 			stmt: &influxql.ReshardStatement{
-				DB: "",
+				DB:    "",
 				Force: true,
 			},
 		},
@@ -3373,6 +3373,15 @@ func TestParser_ParseStatement(t *testing.T) {
 		{
 			s:    "REBALANCE CONTINUOUS QUERY ",
 			stmt: &influxql.RebalanceContinuousQueryStatement{},
+		},
+		{
+			s: "set database \"*\" maxBuckets 5",
+			stmt: &influxql.SetStatement{
+				DB: "*",
+				Setting: map[string]int{
+					influxql.MaxBuckets: 5,
+				},
+			},
 		},
 		// Errors
 		{s: ``, err: `found EOF, expected SELECT, DELETE, SHOW, CREATE, DROP, RESHARD, EXPLAIN, GRANT, REVOKE, ALTER, SET, KILL, START, STOP, REBALANCE, REDO, DISABLE, ENABLE at line 1, char 1`},
@@ -3556,7 +3565,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `ALTER RETENTION POLICY policy1 ON testdb REPLICATION 1 REPLICATION 2`, err: `found duplicate REPLICATION option at line 1, char 56`},
 		{s: `ALTER RETENTION POLICY policy1 ON testdb DURATION 15251w`, err: `overflowed duration 15251w: choose a smaller duration or INF at line 1, char 51`},
 		{s: `ALTER RETENTION POLICY policy1 ON testdb DURATION INF SHARD DURATION INF`, err: `invalid duration INF for shard duration at line 1, char 70`},
-		{s: `SET`, err: `found EOF, expected PASSWORD at line 1, char 5`},
+		{s: `SET`, err: `found EOF, expected DATABASE, PASSWORD at line 1, char 5`},
 		{s: `SET PASSWORD`, err: `found EOF, expected FOR at line 1, char 14`},
 		{s: `SET PASSWORD something`, err: `found something, expected FOR at line 1, char 14`},
 		{s: `SET PASSWORD FOR`, err: `found EOF, expected identifier at line 1, char 18`},
