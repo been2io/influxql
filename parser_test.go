@@ -3375,10 +3375,10 @@ func TestParser_ParseStatement(t *testing.T) {
 			stmt: &influxql.RebalanceContinuousQueryStatement{},
 		},
 		{
-			s: "set database \"*\" maxBuckets 5",
+			s: "set database \"*\" maxBucketsN 5",
 			stmt: &influxql.SetStatement{
 				DB: "*",
-				Setting: map[string]int{
+				Setting: map[string]int64{
 					influxql.MaxBuckets: 5,
 				},
 			},

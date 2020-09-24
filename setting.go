@@ -6,7 +6,7 @@ import (
 )
 
 type SetStatement struct {
-	Setting map[string]int
+	Setting map[string]int64
 	DB      string
 }
 

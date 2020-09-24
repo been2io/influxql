@@ -260,13 +260,13 @@ func (p *Parser) parseReshardStatement() (*ReshardStatement, error) {
 }
 
 const (
-	MaxSeries            = "maxSeries"
-	MaxBuckets           = "maxBuckets"
-	MaxPoints            = "maxPoints"
+	MaxSeries            = "maxSeriesN"
+	MaxBuckets           = "maxBucketsN"
+	MaxPoints            = "maxPointsN"
 	DefaultDuration      = "defaultDuration"
 	DefaultShardDuration = "defaultShardDuration"
-	DefaultReplication   = "defaultReplication"
-	DefaultPartition     = "defaultPartition"
+	DefaultReplication   = "defaultReplicationN"
+	DefaultPartition     = "defaultPartitionN"
 )
 
 var settings []string
@@ -277,7 +277,7 @@ func init() {
 
 func (p *Parser) parseSetStatement() (*SetStatement, error) {
 	stmt := &SetStatement{
-		Setting: make(map[string]int),
+		Setting: make(map[string]int64),
 	}
 	_, _, lit := p.ScanIgnoreWhitespace()
 	if lit == "" {
@@ -287,16 +287,22 @@ func (p *Parser) parseSetStatement() (*SetStatement, error) {
 	for {
 		_, _, lit := p.ScanIgnoreWhitespace()
 		if lit == "" {
-			if  len(stmt.Setting) == 0{
-				return nil,fmt.Errorf("require %v", settings)
-			}
 			break
 		}
-		v, err := p.ParseInt(0, math.MaxInt64)
-		if err != nil {
-			return nil, err
+		var v int64
+		if strings.HasSuffix(lit, "Duration") {
+			d, err := p.ParseDuration()
+			if err != nil {
+				return nil, err
+			}
+			v = int64(d)
+		} else {
+			d, err := p.ParseInt(0, math.MaxInt64)
+			if err != nil {
+				return nil, err
+			}
+			v = int64(d)
 		}
-
 		var found bool
 		for _, s := range settings {
 			if lit == s {
@@ -305,7 +311,7 @@ func (p *Parser) parseSetStatement() (*SetStatement, error) {
 			}
 		}
 		if !found {
-			return nil,fmt.Errorf("no setting named %v,require %v", lit, settings)
+			return nil, fmt.Errorf("no setting named %v,require %v", lit, settings)
 		}
 	}
 	return stmt, nil
