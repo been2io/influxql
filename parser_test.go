@@ -3375,12 +3375,25 @@ func TestParser_ParseStatement(t *testing.T) {
 			stmt: &influxql.RebalanceContinuousQueryStatement{},
 		},
 		{
-			s: "set database \"*\" maxBucketsN 5",
-			stmt: &influxql.SetStatement{
+			s: "alter config on \"*\" maxBucketsN 5",
+			stmt: &influxql.AlterConfigStatement{
 				DB: "*",
 				Setting: map[string]int64{
 					influxql.MaxBuckets: 5,
 				},
+			},
+		},
+		{
+			s: "show config on \"*\" ",
+			stmt: &influxql.ShowConfigStatement{
+				DB: "*",
+			},
+		},
+
+		{
+			s: "drop config on \"*\"",
+			stmt: &influxql.DropConfigStatement{
+				DB: "*",
 			},
 		},
 		// Errors
@@ -3432,7 +3445,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `SHOW RETENTION ON`, err: `found ON, expected POLICIES at line 1, char 16`},
 		{s: `SHOW RETENTION POLICIES ON`, err: `found EOF, expected identifier at line 1, char 28`},
 		{s: `SHOW SHARD`, err: `found EOF, expected GROUPS at line 1, char 12`},
-		{s: `SHOW FOO`, err: `found FOO, expected CONTINUOUS, DATABASES, PROXIES, DIAGNOSTICS, FIELD, GRANTS, MEASUREMENT, MEASUREMENTS, QUERIES, RETENTION, SERIES, SHARD, SHARDS, STATS, SUBSCRIPTIONS, TAG, USERS, NODES at line 1, char 6`},
+		{s: `SHOW FOO`, err: `found FOO, expected CONTINUOUS, DATABASES, PROXIES, DIAGNOSTICS, FIELD, GRANTS, MEASUREMENT, MEASUREMENTS, QUERIES, RETENTION, SERIES, SHARD, SHARDS, STATS, SUBSCRIPTIONS, TAG, USERS, NODES, CONFIG at line 1, char 6`},
 		{s: `SHOW STATS FOR`, err: `found EOF, expected string at line 1, char 16`},
 		{s: `SHOW DIAGNOSTICS FOR`, err: `found EOF, expected string at line 1, char 22`},
 		{s: `SHOW GRANTS`, err: `found EOF, expected FOR at line 1, char 13`},
@@ -3445,7 +3458,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `CREATE CONTINUOUS QUERY`, err: `found EOF, expected identifier at line 1, char 25`},
 		{s: `CREATE CONTINUOUS QUERY cq ON db RESAMPLE FOR 5s BEGIN SELECT mean(value) INTO cpu_mean FROM cpu GROUP BY time(10s) END`, err: `FOR duration must be >= GROUP BY time duration: must be a minimum of 10s, got 5s`},
 		{s: `CREATE CONTINUOUS QUERY cq ON db RESAMPLE EVERY 10s FOR 5s BEGIN SELECT mean(value) INTO cpu_mean FROM cpu GROUP BY time(5s) END`, err: `FOR duration must be >= GROUP BY time duration: must be a minimum of 10s, got 5s`},
-		{s: `DROP FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, MEASUREMENT, RETENTION, SERIES, SHARD, SUBSCRIPTION, USER, NODES at line 1, char 6`},
+		{s: `DROP FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, MEASUREMENT, RETENTION, SERIES, SHARD, SUBSCRIPTION, USER, NODES, CONFIG at line 1, char 6`},
 		{s: `CREATE FOO`, err: `found FOO, expected CONTINUOUS, DATABASE, USER, RETENTION, SUBSCRIPTION, NODES at line 1, char 8`},
 		{s: `CREATE DATABASE`, err: `found EOF, expected identifier at line 1, char 17`},
 		{s: `CREATE DATABASE "testdb" WITH`, err: `found EOF, expected DURATION, NAME, REPLICATION, SHARD, KEY, PARTITION, NODES at line 1, char 31`},
@@ -3557,7 +3570,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `CREATE RETENTION POLICY policy1 ON testdb DURATION 1h REPLICATION 0`, err: `invalid value 0: must be 1 <= n <= 2147483647 at line 1, char 67`},
 		{s: `CREATE RETENTION POLICY policy1 ON testdb DURATION 1h REPLICATION bad`, err: `found bad, expected integer at line 1, char 67`},
 		{s: `CREATE RETENTION POLICY policy1 ON testdb DURATION 1h REPLICATION 2 SHARD DURATION INF`, err: `invalid duration INF for shard duration at line 1, char 84`},
-		{s: `ALTER`, err: `found EOF, expected RETENTION, NODES at line 1, char 7`},
+		{s: `ALTER`, err: `found EOF, expected RETENTION, NODES, CONFIG at line 1, char 7`},
 		{s: `ALTER RETENTION`, err: `found EOF, expected POLICY at line 1, char 17`},
 		{s: `ALTER RETENTION POLICY`, err: `found EOF, expected identifier at line 1, char 24`},
 		{s: `ALTER RETENTION POLICY policy1`, err: `found EOF, expected ON at line 1, char 32`}, {s: `ALTER RETENTION POLICY policy1 ON`, err: `found EOF, expected identifier at line 1, char 35`},
@@ -3565,7 +3578,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		{s: `ALTER RETENTION POLICY policy1 ON testdb REPLICATION 1 REPLICATION 2`, err: `found duplicate REPLICATION option at line 1, char 56`},
 		{s: `ALTER RETENTION POLICY policy1 ON testdb DURATION 15251w`, err: `overflowed duration 15251w: choose a smaller duration or INF at line 1, char 51`},
 		{s: `ALTER RETENTION POLICY policy1 ON testdb DURATION INF SHARD DURATION INF`, err: `invalid duration INF for shard duration at line 1, char 70`},
-		{s: `SET`, err: `found EOF, expected DATABASE, PASSWORD at line 1, char 5`},
+		{s: `SET`, err: `found EOF, expected PASSWORD at line 1, char 5`},
 		{s: `SET PASSWORD`, err: `found EOF, expected FOR at line 1, char 14`},
 		{s: `SET PASSWORD something`, err: `found something, expected FOR at line 1, char 14`},
 		{s: `SET PASSWORD FOR`, err: `found EOF, expected identifier at line 1, char 18`},

@@ -167,6 +167,7 @@ const (
 	AUTH
 	RESHARD
 	FORCE
+	CONFIG
 	keywordEnd
 )
 
@@ -316,6 +317,7 @@ var tokens = [...]string{
 	AUTH:          "AUTH",
 	RESHARD:       "RESHARD",
 	FORCE:         "FORCE",
+	CONFIG:        "CONFIG",
 }
 
 var keywords map[string]Token

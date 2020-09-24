@@ -177,6 +177,9 @@ func init() {
 		show.Handle(NODES, func(p *Parser) (Statement, error) {
 			return p.parseShowNodesStatement()
 		})
+		show.Handle(CONFIG, func(parser *Parser) (Statement, error) {
+			return parser.parseShowConfigStatement()
+		})
 	})
 	Language.Group(CREATE).With(func(create *ParseTree) {
 		create.Group(CONTINUOUS).Handle(QUERY, func(p *Parser) (Statement, error) {
@@ -226,6 +229,9 @@ func init() {
 		drop.Handle(NODES, func(parser *Parser) (Statement, error) {
 			return parser.parseDropNodesStatement()
 		})
+		drop.Handle(CONFIG, func(parser *Parser) (Statement, error) {
+			return parser.parseDropConfigStatement()
+		})
 	})
 	Language.Handle(RESHARD, func(parser *Parser) (Statement, error) {
 		return parser.parseReshardStatement()
@@ -246,11 +252,11 @@ func init() {
 		alter.Handle(NODES, func(parser *Parser) (Statement, error) {
 			return parser.parseAlterNodesStatement()
 		})
+		alter.Handle(CONFIG, func(parser *Parser) (Statement, error) {
+			return parser.parseAlterConfigStatement()
+		})
 	})
 	Language.Group(SET).With(func(tree *ParseTree) {
-		tree.Handle(DATABASE, func(parser *Parser) (Statement, error) {
-			return parser.parseSetStatement()
-		})
 		tree.Group(PASSWORD).Handle(FOR, func(parser *Parser) (Statement, error) {
 			return parser.parseSetPasswordUserStatement()
 		})

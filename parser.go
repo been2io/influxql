@@ -275,48 +275,6 @@ func init() {
 	settings = []string{MaxSeries, MaxBuckets, MaxPoints, DefaultDuration, DefaultReplication, DefaultShardDuration, DefaultPartition}
 }
 
-func (p *Parser) parseSetStatement() (*SetStatement, error) {
-	stmt := &SetStatement{
-		Setting: make(map[string]int64),
-	}
-	_, _, lit := p.ScanIgnoreWhitespace()
-	if lit == "" {
-		return nil, errors.New("database name or * required")
-	}
-	stmt.DB = lit
-	for {
-		_, _, lit := p.ScanIgnoreWhitespace()
-		if lit == "" {
-			break
-		}
-		var v int64
-		if strings.HasSuffix(lit, "Duration") {
-			d, err := p.ParseDuration()
-			if err != nil {
-				return nil, err
-			}
-			v = int64(d)
-		} else {
-			d, err := p.ParseInt(0, math.MaxInt64)
-			if err != nil {
-				return nil, err
-			}
-			v = int64(d)
-		}
-		var found bool
-		for _, s := range settings {
-			if lit == s {
-				found = true
-				stmt.Setting[lit] = v
-			}
-		}
-		if !found {
-			return nil, fmt.Errorf("no setting named %v,require %v", lit, settings)
-		}
-	}
-	return stmt, nil
-
-}
 
 // parseAlterRetentionPolicyStatement parses a string and returns an alter retention policy statement.
 // This function assumes the ALTER RETENTION POLICY tokens have already been consumed.
