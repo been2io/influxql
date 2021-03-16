@@ -613,7 +613,7 @@ type NodeOptions struct {
 	IPV4       string
 	IPV6       string
 	Start      string
-	EnableIPv6 bool
+	EnableIPv6 *bool
 }
 
 func (st *NodeOptions) String() string {
@@ -649,7 +649,7 @@ func (st *NodeOptions) String() string {
 		buf.WriteString(" START ")
 		buf.WriteString(QuoteString(st.Start))
 	}
-	if st.EnableIPv6 {
+	if st.EnableIPv6 != nil && *st.EnableIPv6 {
 		buf.WriteString(" ENABLEIPV6 ")
 		buf.WriteString("TRUE")
 	}

@@ -2073,9 +2073,9 @@ func (p *Parser) parseNodeOptions() (*NodeOptions, map[Token]struct{}, error) {
 		case ENABLEIPV6:
 			t, _, _ := p.ScanIgnoreWhitespace()
 			if t == TRUE {
-				stmt.EnableIPv6 = true
+				stmt.EnableIPv6 = Boolptr(true)
 			}else if t ==FALSE {
-				stmt.EnableIPv6 = false
+				stmt.EnableIPv6 = Boolptr(false)
 			}else {
 				return nil, found, errors.New("V6ENABLED expect TRUE or FALSE")
 			}

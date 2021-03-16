@@ -3315,7 +3315,7 @@ func TestParser_ParseStatement(t *testing.T) {
 					Mode:   "WO",
 					Enable: influxql.Boolptr(true),
 					IPV6: "afaf:323:3ww:32",
-					EnableIPv6: true,
+					EnableIPv6: influxql.Boolptr(true),
 				},
 			},
 		},
