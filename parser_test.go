@@ -3291,7 +3291,7 @@ func TestParser_ParseStatement(t *testing.T) {
 		},
 		// NODES
 		{
-			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO WEIGHT 1 ",
+			s: "CREATE NODES 'n1','n2','n3' PORTS '8888','7777' LABELS 'a=b' DISABLE MODE RO WEIGHT 1 IPV4 '10.10.10.21' IPV6 'afaf:323:3ww:32' START '2006-01-02T15:04:05Z07:00'",
 			stmt: &influxql.CreateNodesStatement{
 				Hosts: []string{"n1", "n2", "n3"},
 				Ports: []int{8888, 7777},
@@ -3300,17 +3300,21 @@ func TestParser_ParseStatement(t *testing.T) {
 					Mode:   "RO",
 					Weight: 1,
 					Enable: influxql.Boolptr(false),
+					IPV4:   "10.10.10.21",
+					IPV6:   "afaf:323:3ww:32",
+					Start:  time.RFC3339,
 				},
 			},
 		},
 		{
-			s: "ALTER NODES 'n1:8888','n2:7777' ENABLE LABELS 'c=d' MODE WO",
+			s: "ALTER NODES 'n1:8888','n2:7777' ENABLE LABELS 'c=d' MODE WO IPV6 'afaf:323:3ww:32'",
 			stmt: &influxql.AlterNodesStatement{
 				Names: []string{"n1:8888", "n2:7777"},
 				NodeOptions: influxql.NodeOptions{
 					Labels: map[string]string{"c": "d"},
 					Mode:   "WO",
 					Enable: influxql.Boolptr(true),
+					IPV6: "afaf:323:3ww:32",
 				},
 			},
 		},

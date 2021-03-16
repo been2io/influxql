@@ -168,6 +168,8 @@ const (
 	RESHARD
 	FORCE
 	CONFIG
+	IPV4
+	IPV6
 	keywordEnd
 )
 
@@ -318,6 +320,8 @@ var tokens = [...]string{
 	RESHARD:       "RESHARD",
 	FORCE:         "FORCE",
 	CONFIG:        "CONFIG",
+	IPV4:          "IPV4",
+	IPV6:          "IPV6",
 }
 
 var keywords map[string]Token

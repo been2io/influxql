@@ -610,6 +610,9 @@ type NodeOptions struct {
 	Mode   string
 	Enable *bool
 	Weight int
+	IPV4   string
+	IPV6   string
+	Start  string
 }
 
 func (st *NodeOptions) String() string {
@@ -632,6 +635,18 @@ func (st *NodeOptions) String() string {
 		} else {
 			buf.WriteString(" DISABLE ")
 		}
+	}
+	if st.IPV4 != "" {
+		buf.WriteString(" IPV4 ")
+		buf.WriteString(QuoteString(st.IPV4))
+	}
+	if st.IPV6 != "" {
+		buf.WriteString(" IPV6 ")
+		buf.WriteString(QuoteString(st.IPV6))
+	}
+	if st.Start != "" {
+		buf.WriteString(" START ")
+		buf.WriteString(QuoteString(st.Start))
 	}
 	return buf.String()
 }

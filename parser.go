@@ -275,7 +275,6 @@ func init() {
 	settings = []string{MaxSeries, MaxBuckets, MaxPoints, DefaultDuration, DefaultReplication, DefaultShardDuration, DefaultPartition}
 }
 
-
 // parseAlterRetentionPolicyStatement parses a string and returns an alter retention policy statement.
 // This function assumes the ALTER RETENTION POLICY tokens have already been consumed.
 func (p *Parser) parseAlterRetentionPolicyStatement() (*AlterRetentionPolicyStatement, error) {
@@ -2053,6 +2052,24 @@ func (p *Parser) parseNodeOptions() (*NodeOptions, map[Token]struct{}, error) {
 				return nil, found, err
 			}
 			stmt.Weight = t
+		case IPV4:
+			s, err := p.parseString()
+			if err != nil {
+				return nil, found, err
+			}
+			stmt.IPV4 = s
+		case IPV6:
+			s, err := p.parseString()
+			if err != nil {
+				return nil, found, err
+			}
+			stmt.IPV6 = s
+		case START:
+			s, err := p.parseString()
+			if err != nil {
+				return nil, found, err
+			}
+			stmt.Start = s
 		default:
 			p.Unscan()
 			return stmt, found, nil
