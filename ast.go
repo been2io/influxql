@@ -606,13 +606,14 @@ func (a SortFields) String() string {
 }
 
 type NodeOptions struct {
-	Labels map[string]string
-	Mode   string
-	Enable *bool
-	Weight int
-	IPV4   string
-	IPV6   string
-	Start  string
+	Labels     map[string]string
+	Mode       string
+	Enable     *bool
+	Weight     int
+	IPV4       string
+	IPV6       string
+	Start      string
+	EnableIPv6 bool
 }
 
 func (st *NodeOptions) String() string {
@@ -647,6 +648,10 @@ func (st *NodeOptions) String() string {
 	if st.Start != "" {
 		buf.WriteString(" START ")
 		buf.WriteString(QuoteString(st.Start))
+	}
+	if st.EnableIPv6 {
+		buf.WriteString(" ENABLEIPV6 ")
+		buf.WriteString("TRUE")
 	}
 	return buf.String()
 }

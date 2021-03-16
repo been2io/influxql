@@ -2070,6 +2070,16 @@ func (p *Parser) parseNodeOptions() (*NodeOptions, map[Token]struct{}, error) {
 				return nil, found, err
 			}
 			stmt.Start = s
+		case ENABLEIPV6:
+			t, _, _ := p.ScanIgnoreWhitespace()
+			if t == TRUE {
+				stmt.EnableIPv6 = true
+			}else if t ==FALSE {
+				stmt.EnableIPv6 = false
+			}else {
+				return nil, found, errors.New("V6ENABLED expect TRUE or FALSE")
+			}
+
 		default:
 			p.Unscan()
 			return stmt, found, nil
