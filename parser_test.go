@@ -3307,7 +3307,7 @@ func TestParser_ParseStatement(t *testing.T) {
 			},
 		},
 		{
-			s: "ALTER NODES 'n1:8888','n2:7777' ENABLE LABELS 'c=d' MODE WO IPV6 'afaf:323:3ww:32' ENABLEIPV6 TRUE",
+			s: "ALTER NODES 'n1:8888','n2:7777' ENABLE LABELS 'c=d' MODE WO IPV6 'afaf:323:3ww:32' ENABLEIPV6 TRUE PORT 7000",
 			stmt: &influxql.AlterNodesStatement{
 				Names: []string{"n1:8888", "n2:7777"},
 				NodeOptions: influxql.NodeOptions{
@@ -3316,6 +3316,7 @@ func TestParser_ParseStatement(t *testing.T) {
 					Enable: influxql.Boolptr(true),
 					IPV6: "afaf:323:3ww:32",
 					EnableIPv6: influxql.Boolptr(true),
+					Port: intptr(7000),
 				},
 			},
 		},

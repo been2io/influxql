@@ -614,6 +614,7 @@ type NodeOptions struct {
 	IPV6       string
 	Start      string
 	EnableIPv6 *bool
+	Port       *int
 }
 
 func (st *NodeOptions) String() string {
@@ -652,6 +653,10 @@ func (st *NodeOptions) String() string {
 	if st.EnableIPv6 != nil && *st.EnableIPv6 {
 		buf.WriteString(" ENABLEIPV6 ")
 		buf.WriteString("TRUE")
+	}
+	if st.Port != nil {
+		buf.WriteString(" PORT ")
+		buf.WriteString(strconv.Itoa(*st.Port))
 	}
 	return buf.String()
 }

@@ -171,6 +171,7 @@ const (
 	IPV4
 	IPV6
 	ENABLEIPV6
+	PORT
 	keywordEnd
 )
 
@@ -323,7 +324,8 @@ var tokens = [...]string{
 	CONFIG:        "CONFIG",
 	IPV4:          "IPV4",
 	IPV6:          "IPV6",
-	ENABLEIPV6:     "ENABLEIPV6",
+	ENABLEIPV6:    "ENABLEIPV6",
+	PORT:          "PORT",
 }
 
 var keywords map[string]Token
